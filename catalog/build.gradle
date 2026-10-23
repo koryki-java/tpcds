@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+description = 'Catalog of the TPC-DS database for DuckDB -- db.json (physical schema: tables, columns, ' +
+        'types, keys, relations) and model.json (semantic layer: entities, attributes, links) -- ' +
+        'to test SQL/KQL query-engine implementations against a decision-support schema.'
+
+dependencies {
+    testImplementation platform(libs.junit.bom)
+    testImplementation libs.junit.jupiter
+    testImplementation libs.jackson.databind
+    testRuntimeOnly libs.junit.platform.launcher
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'koryki-tpcds-catalog'
+            pom {
+                name = 'koryki-tpcds-catalog'
+            }
+        }
+    }
+}

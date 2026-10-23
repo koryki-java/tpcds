@@ -1,0 +1,2613 @@
+{
+  "description" : "TPC-DS is the decision-support benchmark of the Transaction Processing Performance Council. It models a retailer that sells through three channels: physical stores, a mail-order catalog and a web site. Each channel has a sales table and a returns table, and one more fact table tracks inventory. Dimension tables describe dates, times, items, customers, stores and the other things a sale refers to. Every fact row is one line item of a sale (or return); line items of one order share a ticket number (store) or order number (catalog, web). Keys ending in _sk are surrogate keys that join facts to dimensions.",
+  "entities" : [ {
+    "attributes" : [ {
+      "column" : "cc_call_center_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Call Center Id",
+      "name" : "call_center_id"
+    }, {
+      "column" : "cc_call_center_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Call Center",
+      "name" : "call_center_sk"
+    }, {
+      "column" : "cc_city",
+      "comment" : "City of the address.",
+      "label" : "City",
+      "name" : "city"
+    }, {
+      "column" : "cc_class",
+      "comment" : "Size class of the call center, such as small, medium or large.",
+      "label" : "Class",
+      "name" : "class"
+    }, {
+      "column" : "cc_closed_date_sk",
+      "comment" : "Day the location closed. Foreign key to date_dim.",
+      "label" : "Closed Date",
+      "name" : "closed_date_sk"
+    }, {
+      "column" : "cc_company",
+      "comment" : "Identifier of the company.",
+      "label" : "Company",
+      "name" : "company"
+    }, {
+      "column" : "cc_company_name",
+      "comment" : "Name of the company.",
+      "label" : "Company Name",
+      "name" : "company_name"
+    }, {
+      "column" : "cc_country",
+      "comment" : "Country of the address.",
+      "label" : "Country",
+      "name" : "country"
+    }, {
+      "column" : "cc_county",
+      "comment" : "County of the address.",
+      "label" : "County",
+      "name" : "county"
+    }, {
+      "column" : "cc_division",
+      "comment" : "Identifier of the division.",
+      "label" : "Division",
+      "name" : "division"
+    }, {
+      "column" : "cc_division_name",
+      "comment" : "Name of the division.",
+      "label" : "Division Name",
+      "name" : "division_name"
+    }, {
+      "column" : "cc_employees",
+      "comment" : "Number of employees.",
+      "label" : "Employees",
+      "name" : "employees"
+    }, {
+      "column" : "cc_gmt_offset",
+      "comment" : "Offset of the local time from GMT in hours, for example -5.00.",
+      "label" : "Gmt Offset",
+      "name" : "gmt_offset"
+    }, {
+      "column" : "cc_hours",
+      "comment" : "Opening hours.",
+      "label" : "Hours",
+      "name" : "hours"
+    }, {
+      "column" : "cc_manager",
+      "comment" : "Name of the manager.",
+      "label" : "Manager",
+      "name" : "manager"
+    }, {
+      "column" : "cc_market_manager",
+      "comment" : "Name of the market manager.",
+      "label" : "Market Manager",
+      "name" : "market_manager"
+    }, {
+      "column" : "cc_mkt_class",
+      "comment" : "Class of the market.",
+      "label" : "Mkt Class",
+      "name" : "mkt_class"
+    }, {
+      "column" : "cc_mkt_desc",
+      "comment" : "Description of the market.",
+      "label" : "Mkt Desc",
+      "name" : "mkt_desc"
+    }, {
+      "column" : "cc_mkt_id",
+      "comment" : "Identifier of the market.",
+      "label" : "Mkt Id",
+      "name" : "mkt_id"
+    }, {
+      "column" : "cc_name",
+      "comment" : "Name.",
+      "label" : "Name",
+      "name" : "name"
+    }, {
+      "column" : "cc_open_date_sk",
+      "comment" : "Day the location opened. Foreign key to date_dim.",
+      "label" : "Open Date",
+      "name" : "open_date_sk"
+    }, {
+      "column" : "cc_rec_end_date",
+      "comment" : "Last day this version of the row was valid; empty for the current version.",
+      "label" : "Rec End Date",
+      "name" : "rec_end_date"
+    }, {
+      "column" : "cc_rec_start_date",
+      "comment" : "First day this version of the row was valid.",
+      "label" : "Rec Start Date",
+      "name" : "rec_start_date"
+    }, {
+      "column" : "cc_sq_ft",
+      "comment" : "Floor space in square feet.",
+      "label" : "Sq Ft",
+      "name" : "sq_ft"
+    }, {
+      "column" : "cc_state",
+      "comment" : "Two-letter state code of the address.",
+      "label" : "State",
+      "name" : "state"
+    }, {
+      "column" : "cc_street_name",
+      "comment" : "Street name of the address.",
+      "label" : "Street Name",
+      "name" : "street_name"
+    }, {
+      "column" : "cc_street_number",
+      "comment" : "Street number of the address.",
+      "label" : "Street Number",
+      "name" : "street_number"
+    }, {
+      "column" : "cc_street_type",
+      "comment" : "Street type of the address, such as Street, Avenue or Lane.",
+      "label" : "Street Type",
+      "name" : "street_type"
+    }, {
+      "column" : "cc_suite_number",
+      "comment" : "Suite or apartment number of the address.",
+      "label" : "Suite Number",
+      "name" : "suite_number"
+    }, {
+      "column" : "cc_tax_percentage",
+      "comment" : "Sales tax rate in percent.",
+      "label" : "Tax Percentage",
+      "name" : "tax_percentage"
+    }, {
+      "column" : "cc_zip",
+      "comment" : "Postal code of the address.",
+      "label" : "Zip",
+      "name" : "zip"
+    } ],
+    "comment" : "A call center that takes catalog orders.",
+    "description" : "Call center dimension, versioned like items. Catalog sales and returns point to the call center that handled the order.",
+    "label" : "call_center",
+    "name" : "call_center",
+    "table" : "call_center"
+  }, {
+    "attributes" : [ {
+      "column" : "cp_catalog_number",
+      "comment" : "Number of the catalog the page is in.",
+      "label" : "Catalog Number",
+      "name" : "catalog_number"
+    }, {
+      "column" : "cp_catalog_page_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Catalog Page Id",
+      "name" : "catalog_page_id"
+    }, {
+      "column" : "cp_catalog_page_number",
+      "comment" : "Number of the page inside its catalog.",
+      "label" : "Catalog Page Number",
+      "name" : "catalog_page_number"
+    }, {
+      "column" : "cp_catalog_page_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Catalog Page",
+      "name" : "catalog_page_sk"
+    }, {
+      "column" : "cp_department",
+      "comment" : "Department the catalog page belongs to.",
+      "label" : "Department",
+      "name" : "department"
+    }, {
+      "column" : "cp_description",
+      "comment" : "Description of the page.",
+      "label" : "Description",
+      "name" : "description"
+    }, {
+      "column" : "cp_end_date_sk",
+      "comment" : "Last day the row is valid or active. Foreign key to date_dim.",
+      "label" : "End Date",
+      "name" : "end_date_sk"
+    }, {
+      "column" : "cp_start_date_sk",
+      "comment" : "First day the row is valid or active. Foreign key to date_dim.",
+      "label" : "Start Date",
+      "name" : "start_date_sk"
+    }, {
+      "column" : "cp_type",
+      "comment" : "Type of the catalog: monthly, bi-annual or quarterly.",
+      "label" : "Type",
+      "name" : "type"
+    } ],
+    "comment" : "A page of a printed catalog.",
+    "description" : "One page of one catalog, valid for a date range. Catalog sales and returns point to the page the item was ordered from.",
+    "label" : "catalog_page",
+    "name" : "catalog_page",
+    "table" : "catalog_page"
+  }, {
+    "attributes" : [ {
+      "column" : "cr_call_center_sk",
+      "comment" : "The call center that took the order. Foreign key to call_center.",
+      "label" : "Call Center",
+      "name" : "call_center_sk"
+    }, {
+      "column" : "cr_catalog_page_sk",
+      "comment" : "The catalog page the item was ordered from. Foreign key to catalog_page.",
+      "label" : "Catalog Page",
+      "name" : "catalog_page_sk"
+    }, {
+      "column" : "cr_fee",
+      "comment" : "Fee charged for processing the return.",
+      "label" : "Fee",
+      "name" : "fee"
+    }, {
+      "column" : "cr_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "cr_net_loss",
+      "comment" : "Loss on the returned line: refund plus fee plus shipping, less any money recovered.",
+      "label" : "Net Loss",
+      "name" : "net_loss"
+    }, {
+      "column" : "cr_order_number",
+      "comment" : "Number of the order; all line items of one order share it. Together with item_sk it identifies a row.",
+      "label" : "Order Number",
+      "name" : "order_number"
+    }, {
+      "column" : "cr_reason_sk",
+      "comment" : "The reason for the return. Foreign key to reason.",
+      "label" : "Reason",
+      "name" : "reason_sk"
+    }, {
+      "column" : "cr_refunded_addr_sk",
+      "comment" : "Address of the customer who received the refund. Foreign key to customer_address.",
+      "label" : "Refunded Addr",
+      "name" : "refunded_addr_sk"
+    }, {
+      "column" : "cr_refunded_cash",
+      "comment" : "Part of the refund paid out in cash.",
+      "label" : "Refunded Cash",
+      "name" : "refunded_cash"
+    }, {
+      "column" : "cr_refunded_cdemo_sk",
+      "comment" : "Demographics of the customer who received the refund. Foreign key to customer_demographics.",
+      "label" : "Refunded Cdemo",
+      "name" : "refunded_cdemo_sk"
+    }, {
+      "column" : "cr_refunded_customer_sk",
+      "comment" : "Customer who paid and received the refund. Foreign key to customer.",
+      "label" : "Refunded Customer",
+      "name" : "refunded_customer_sk"
+    }, {
+      "column" : "cr_refunded_hdemo_sk",
+      "comment" : "Household of the customer who received the refund. Foreign key to household_demographics.",
+      "label" : "Refunded Hdemo",
+      "name" : "refunded_hdemo_sk"
+    }, {
+      "column" : "cr_return_amount",
+      "comment" : "Amount refunded for the returned units, without tax.",
+      "label" : "Return Amount",
+      "name" : "return_amount"
+    }, {
+      "column" : "cr_return_amt_inc_tax",
+      "comment" : "Return amount plus tax.",
+      "label" : "Return Amt Inc Tax",
+      "name" : "return_amt_inc_tax"
+    }, {
+      "column" : "cr_return_quantity",
+      "comment" : "Number of units returned.",
+      "label" : "Return Quantity",
+      "name" : "return_quantity"
+    }, {
+      "column" : "cr_return_ship_cost",
+      "comment" : "Cost of shipping the goods back.",
+      "label" : "Return Ship Cost",
+      "name" : "return_ship_cost"
+    }, {
+      "column" : "cr_return_tax",
+      "comment" : "Tax refunded.",
+      "label" : "Return Tax",
+      "name" : "return_tax"
+    }, {
+      "column" : "cr_returned_date_sk",
+      "comment" : "Day the goods were returned. Foreign key to date_dim.",
+      "label" : "Returned Date",
+      "name" : "returned_date_sk"
+    }, {
+      "column" : "cr_returned_time_sk",
+      "comment" : "Time of day the goods were returned. Foreign key to time_dim.",
+      "label" : "Returned Time",
+      "name" : "returned_time_sk"
+    }, {
+      "column" : "cr_returning_addr_sk",
+      "comment" : "Address of the customer who sent the goods back. Foreign key to customer_address.",
+      "label" : "Returning Addr",
+      "name" : "returning_addr_sk"
+    }, {
+      "column" : "cr_returning_cdemo_sk",
+      "comment" : "Demographics of the customer who sent the goods back. Foreign key to customer_demographics.",
+      "label" : "Returning Cdemo",
+      "name" : "returning_cdemo_sk"
+    }, {
+      "column" : "cr_returning_customer_sk",
+      "comment" : "Customer who sent the goods back. Foreign key to customer.",
+      "label" : "Returning Customer",
+      "name" : "returning_customer_sk"
+    }, {
+      "column" : "cr_returning_hdemo_sk",
+      "comment" : "Household of the customer who sent the goods back. Foreign key to household_demographics.",
+      "label" : "Returning Hdemo",
+      "name" : "returning_hdemo_sk"
+    }, {
+      "column" : "cr_reversed_charge",
+      "comment" : "Part of the refund put back on the customer's card.",
+      "label" : "Reversed Charge",
+      "name" : "reversed_charge"
+    }, {
+      "column" : "cr_ship_mode_sk",
+      "comment" : "How the goods are shipped. Foreign key to ship_mode.",
+      "label" : "Ship Mode",
+      "name" : "ship_mode_sk"
+    }, {
+      "column" : "cr_store_credit",
+      "comment" : "Part of the refund given as store credit.",
+      "label" : "Store Credit",
+      "name" : "store_credit"
+    }, {
+      "column" : "cr_warehouse_sk",
+      "comment" : "The warehouse the goods ship from, or where stock is counted. Foreign key to warehouse.",
+      "label" : "Warehouse",
+      "name" : "warehouse_sk"
+    } ],
+    "comment" : "One line item returned from a catalog order.",
+    "description" : "Catalog channel returns fact. It belongs to the sale in catalog_sales with the same item and order number. The refunded customer is the one who paid and got the money back; the returning customer is the one who sent the goods back. They are often the same person.",
+    "label" : "catalog_returns",
+    "name" : "catalog_returns",
+    "table" : "catalog_returns"
+  }, {
+    "attributes" : [ {
+      "column" : "cs_bill_addr_sk",
+      "comment" : "Billing address. Foreign key to customer_address.",
+      "label" : "Bill Addr",
+      "name" : "bill_addr_sk"
+    }, {
+      "column" : "cs_bill_cdemo_sk",
+      "comment" : "Demographics of the customer who is billed. Foreign key to customer_demographics.",
+      "label" : "Bill Cdemo",
+      "name" : "bill_cdemo_sk"
+    }, {
+      "column" : "cs_bill_customer_sk",
+      "comment" : "Customer who is billed for the order. Foreign key to customer.",
+      "label" : "Bill Customer",
+      "name" : "bill_customer_sk"
+    }, {
+      "column" : "cs_bill_hdemo_sk",
+      "comment" : "Household of the customer who is billed. Foreign key to household_demographics.",
+      "label" : "Bill Hdemo",
+      "name" : "bill_hdemo_sk"
+    }, {
+      "column" : "cs_call_center_sk",
+      "comment" : "The call center that took the order. Foreign key to call_center.",
+      "label" : "Call Center",
+      "name" : "call_center_sk"
+    }, {
+      "column" : "cs_catalog_page_sk",
+      "comment" : "The catalog page the item was ordered from. Foreign key to catalog_page.",
+      "label" : "Catalog Page",
+      "name" : "catalog_page_sk"
+    }, {
+      "column" : "cs_coupon_amt",
+      "comment" : "Value of coupons redeemed against the line.",
+      "label" : "Coupon Amt",
+      "name" : "coupon_amt"
+    }, {
+      "column" : "cs_ext_discount_amt",
+      "comment" : "Discount on the whole line: list price minus sales price, times quantity.",
+      "label" : "Ext Discount Amt",
+      "name" : "ext_discount_amt"
+    }, {
+      "column" : "cs_ext_list_price",
+      "comment" : "List price times quantity.",
+      "label" : "Ext List Price",
+      "name" : "ext_list_price"
+    }, {
+      "column" : "cs_ext_sales_price",
+      "comment" : "Sales price times quantity.",
+      "label" : "Ext Sales Price",
+      "name" : "ext_sales_price"
+    }, {
+      "column" : "cs_ext_ship_cost",
+      "comment" : "Shipping cost of the line.",
+      "label" : "Ext Ship Cost",
+      "name" : "ext_ship_cost"
+    }, {
+      "column" : "cs_ext_tax",
+      "comment" : "Tax on the line.",
+      "label" : "Ext Tax",
+      "name" : "ext_tax"
+    }, {
+      "column" : "cs_ext_wholesale_cost",
+      "comment" : "Wholesale cost times quantity.",
+      "label" : "Ext Wholesale Cost",
+      "name" : "ext_wholesale_cost"
+    }, {
+      "column" : "cs_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "cs_list_price",
+      "comment" : "List price of one unit.",
+      "label" : "List Price",
+      "name" : "list_price"
+    }, {
+      "column" : "cs_net_paid",
+      "comment" : "Amount paid for the line: sales price times quantity less coupons, without tax and shipping.",
+      "label" : "Net Paid",
+      "name" : "net_paid"
+    }, {
+      "column" : "cs_net_paid_inc_ship",
+      "comment" : "Net paid plus shipping cost.",
+      "label" : "Net Paid Inc Ship",
+      "name" : "net_paid_inc_ship"
+    }, {
+      "column" : "cs_net_paid_inc_ship_tax",
+      "comment" : "Net paid plus shipping cost and tax.",
+      "label" : "Net Paid Inc Ship Tax",
+      "name" : "net_paid_inc_ship_tax"
+    }, {
+      "column" : "cs_net_paid_inc_tax",
+      "comment" : "Net paid plus tax.",
+      "label" : "Net Paid Inc Tax",
+      "name" : "net_paid_inc_tax"
+    }, {
+      "column" : "cs_net_profit",
+      "comment" : "Profit on the line: net paid less the wholesale cost.",
+      "label" : "Net Profit",
+      "name" : "net_profit"
+    }, {
+      "column" : "cs_order_number",
+      "comment" : "Number of the order; all line items of one order share it. Together with item_sk it identifies a row.",
+      "label" : "Order Number",
+      "name" : "order_number"
+    }, {
+      "column" : "cs_promo_sk",
+      "comment" : "The promotion that applied. Foreign key to promotion.",
+      "label" : "Promo",
+      "name" : "promo_sk"
+    }, {
+      "column" : "cs_quantity",
+      "comment" : "Number of units sold on this line.",
+      "label" : "Quantity",
+      "name" : "quantity"
+    }, {
+      "column" : "cs_sales_price",
+      "comment" : "Price of one unit actually charged, after discount.",
+      "label" : "Sales Price",
+      "name" : "sales_price"
+    }, {
+      "column" : "cs_ship_addr_sk",
+      "comment" : "Shipping address. Foreign key to customer_address.",
+      "label" : "Ship Addr",
+      "name" : "ship_addr_sk"
+    }, {
+      "column" : "cs_ship_cdemo_sk",
+      "comment" : "Demographics of the customer the goods are shipped to. Foreign key to customer_demographics.",
+      "label" : "Ship Cdemo",
+      "name" : "ship_cdemo_sk"
+    }, {
+      "column" : "cs_ship_customer_sk",
+      "comment" : "Customer the goods are shipped to. Foreign key to customer.",
+      "label" : "Ship Customer",
+      "name" : "ship_customer_sk"
+    }, {
+      "column" : "cs_ship_date_sk",
+      "comment" : "Day the goods were shipped. Foreign key to date_dim.",
+      "label" : "Ship Date",
+      "name" : "ship_date_sk"
+    }, {
+      "column" : "cs_ship_hdemo_sk",
+      "comment" : "Household of the customer the goods are shipped to. Foreign key to household_demographics.",
+      "label" : "Ship Hdemo",
+      "name" : "ship_hdemo_sk"
+    }, {
+      "column" : "cs_ship_mode_sk",
+      "comment" : "How the goods are shipped. Foreign key to ship_mode.",
+      "label" : "Ship Mode",
+      "name" : "ship_mode_sk"
+    }, {
+      "column" : "cs_sold_date_sk",
+      "comment" : "Day the sale was made. Foreign key to date_dim.",
+      "label" : "Sold Date",
+      "name" : "sold_date_sk"
+    }, {
+      "column" : "cs_sold_time_sk",
+      "comment" : "Time of day the sale was made. Foreign key to time_dim.",
+      "label" : "Sold Time",
+      "name" : "sold_time_sk"
+    }, {
+      "column" : "cs_warehouse_sk",
+      "comment" : "The warehouse the goods ship from, or where stock is counted. Foreign key to warehouse.",
+      "label" : "Warehouse",
+      "name" : "warehouse_sk"
+    }, {
+      "column" : "cs_wholesale_cost",
+      "comment" : "Wholesale cost of one unit.",
+      "label" : "Wholesale Cost",
+      "name" : "wholesale_cost"
+    } ],
+    "comment" : "One line item sold through the catalog.",
+    "description" : "Catalog channel sales fact. One row per item on a catalog order; the order number groups the line items. The customer who is billed can differ from the one the goods are shipped to, so every customer, demographics and address reference comes as a bill and a ship variant.",
+    "label" : "catalog_sales",
+    "name" : "catalog_sales",
+    "table" : "catalog_sales"
+  }, {
+    "attributes" : [ {
+      "column" : "c_birth_country",
+      "comment" : "Country of birth.",
+      "label" : "Birth Country",
+      "name" : "birth_country"
+    }, {
+      "column" : "c_birth_day",
+      "comment" : "Day of the month of the birth date.",
+      "label" : "Birth Day",
+      "name" : "birth_day"
+    }, {
+      "column" : "c_birth_month",
+      "comment" : "Month of the birth date, 1 to 12.",
+      "label" : "Birth Month",
+      "name" : "birth_month"
+    }, {
+      "column" : "c_birth_year",
+      "comment" : "Year of birth.",
+      "label" : "Birth Year",
+      "name" : "birth_year"
+    }, {
+      "column" : "c_current_addr_sk",
+      "comment" : "Current address of the customer. Foreign key to customer_address.",
+      "label" : "Current Addr",
+      "name" : "current_addr_sk"
+    }, {
+      "column" : "c_current_cdemo_sk",
+      "comment" : "Current demographics of the customer. Foreign key to customer_demographics.",
+      "label" : "Current Cdemo",
+      "name" : "current_cdemo_sk"
+    }, {
+      "column" : "c_current_hdemo_sk",
+      "comment" : "Current household of the customer. Foreign key to household_demographics.",
+      "label" : "Current Hdemo",
+      "name" : "current_hdemo_sk"
+    }, {
+      "column" : "c_customer_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Customer Id",
+      "name" : "customer_id"
+    }, {
+      "column" : "c_customer_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Customer",
+      "name" : "customer_sk"
+    }, {
+      "column" : "c_email_address",
+      "comment" : "Email address.",
+      "label" : "Email Address",
+      "name" : "email_address"
+    }, {
+      "column" : "c_first_name",
+      "comment" : "First name.",
+      "label" : "First Name",
+      "name" : "first_name"
+    }, {
+      "column" : "c_first_sales_date_sk",
+      "comment" : "Day of the customer's first purchase. Foreign key to date_dim.",
+      "label" : "First Sales Date",
+      "name" : "first_sales_date_sk"
+    }, {
+      "column" : "c_first_shipto_date_sk",
+      "comment" : "Day of the customer's first shipment. Foreign key to date_dim.",
+      "label" : "First Shipto Date",
+      "name" : "first_shipto_date_sk"
+    }, {
+      "column" : "c_last_name",
+      "comment" : "Last name.",
+      "label" : "Last Name",
+      "name" : "last_name"
+    }, {
+      "column" : "c_last_review_date_sk",
+      "comment" : "Day of the customer's last review. Foreign key to date_dim.",
+      "label" : "Last Review Date",
+      "name" : "last_review_date_sk"
+    }, {
+      "column" : "c_login",
+      "comment" : "Login name of the customer.",
+      "label" : "Login",
+      "name" : "login"
+    }, {
+      "column" : "c_preferred_cust_flag",
+      "comment" : "Y if the customer is a preferred customer, otherwise N.",
+      "label" : "Preferred Cust Flag",
+      "name" : "preferred_cust_flag"
+    }, {
+      "column" : "c_salutation",
+      "comment" : "Salutation, such as Mr., Mrs. or Dr.",
+      "label" : "Salutation",
+      "name" : "salutation"
+    } ],
+    "comment" : "A person who buys.",
+    "description" : "The customer dimension: one row per person, with name, birth data and contact data. The current demographics, household demographics and address are referenced here; the address at the time of a purchase is the one on the sale row.",
+    "label" : "customer",
+    "name" : "customer",
+    "table" : "customer"
+  }, {
+    "attributes" : [ {
+      "column" : "ca_address_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Address Id",
+      "name" : "address_id"
+    }, {
+      "column" : "ca_address_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Address",
+      "name" : "address_sk"
+    }, {
+      "column" : "ca_city",
+      "comment" : "City of the address.",
+      "label" : "City",
+      "name" : "city"
+    }, {
+      "column" : "ca_country",
+      "comment" : "Country of the address.",
+      "label" : "Country",
+      "name" : "country"
+    }, {
+      "column" : "ca_county",
+      "comment" : "County of the address.",
+      "label" : "County",
+      "name" : "county"
+    }, {
+      "column" : "ca_gmt_offset",
+      "comment" : "Offset of the local time from GMT in hours, for example -5.00.",
+      "label" : "Gmt Offset",
+      "name" : "gmt_offset"
+    }, {
+      "column" : "ca_location_type",
+      "comment" : "Kind of dwelling, such as apartment, condo or single family.",
+      "label" : "Location Type",
+      "name" : "location_type"
+    }, {
+      "column" : "ca_state",
+      "comment" : "Two-letter state code of the address.",
+      "label" : "State",
+      "name" : "state"
+    }, {
+      "column" : "ca_street_name",
+      "comment" : "Street name of the address.",
+      "label" : "Street Name",
+      "name" : "street_name"
+    }, {
+      "column" : "ca_street_number",
+      "comment" : "Street number of the address.",
+      "label" : "Street Number",
+      "name" : "street_number"
+    }, {
+      "column" : "ca_street_type",
+      "comment" : "Street type of the address, such as Street, Avenue or Lane.",
+      "label" : "Street Type",
+      "name" : "street_type"
+    }, {
+      "column" : "ca_suite_number",
+      "comment" : "Suite or apartment number of the address.",
+      "label" : "Suite Number",
+      "name" : "suite_number"
+    }, {
+      "column" : "ca_zip",
+      "comment" : "Postal code of the address.",
+      "label" : "Zip",
+      "name" : "zip"
+    } ],
+    "comment" : "A postal address.",
+    "description" : "Address dimension used by customers and by the billing, shipping and refund addresses on sales and returns. One row per address, not per person.",
+    "label" : "customer_address",
+    "name" : "customer_address",
+    "table" : "customer_address"
+  }, {
+    "attributes" : [ {
+      "column" : "cd_credit_rating",
+      "comment" : "Credit rating: Good, High Risk, Low Risk or Unknown.",
+      "label" : "Credit Rating",
+      "name" : "credit_rating"
+    }, {
+      "column" : "cd_demo_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Demo",
+      "name" : "demo_sk"
+    }, {
+      "column" : "cd_dep_college_count",
+      "comment" : "Number of dependents who attend college.",
+      "label" : "Dep College Count",
+      "name" : "dep_college_count"
+    }, {
+      "column" : "cd_dep_count",
+      "comment" : "Number of dependents.",
+      "label" : "Dep Count",
+      "name" : "dep_count"
+    }, {
+      "column" : "cd_dep_employed_count",
+      "comment" : "Number of dependents who are employed.",
+      "label" : "Dep Employed Count",
+      "name" : "dep_employed_count"
+    }, {
+      "column" : "cd_education_status",
+      "comment" : "Highest education, for example Primary, College or Advanced Degree.",
+      "label" : "Education Status",
+      "name" : "education_status"
+    }, {
+      "column" : "cd_gender",
+      "comment" : "Gender: M or F.",
+      "label" : "Gender",
+      "name" : "gender"
+    }, {
+      "column" : "cd_marital_status",
+      "comment" : "Marital status: M married, S single, D divorced, W widowed or U unknown.",
+      "label" : "Marital Status",
+      "name" : "marital_status"
+    }, {
+      "column" : "cd_purchase_estimate",
+      "comment" : "Estimated yearly purchase volume of such a customer.",
+      "label" : "Purchase Estimate",
+      "name" : "purchase_estimate"
+    } ],
+    "comment" : "One combination of customer demographic attributes.",
+    "description" : "Demographics dimension: one row for every distinct combination of gender, marital status, education, purchase estimate, credit rating and dependent counts. Rows are shared by many customers, so it is a profile, not a person.",
+    "label" : "customer_demographics",
+    "name" : "customer_demographics",
+    "table" : "customer_demographics"
+  }, {
+    "attributes" : [ {
+      "column" : "d_current_day",
+      "comment" : "Y if this is the current day of the data set, otherwise N.",
+      "label" : "Current Day",
+      "name" : "current_day"
+    }, {
+      "column" : "d_current_month",
+      "comment" : "Y if the day is in the current month of the data set, otherwise N.",
+      "label" : "Current Month",
+      "name" : "current_month"
+    }, {
+      "column" : "d_current_quarter",
+      "comment" : "Y if the day is in the current quarter of the data set, otherwise N.",
+      "label" : "Current Quarter",
+      "name" : "current_quarter"
+    }, {
+      "column" : "d_current_week",
+      "comment" : "Y if the day is in the current week of the data set, otherwise N.",
+      "label" : "Current Week",
+      "name" : "current_week"
+    }, {
+      "column" : "d_current_year",
+      "comment" : "Y if the day is in the current year of the data set, otherwise N.",
+      "label" : "Current Year",
+      "name" : "current_year"
+    }, {
+      "column" : "d_date",
+      "comment" : "The calendar date.",
+      "label" : "Date",
+      "name" : "date"
+    }, {
+      "column" : "d_date_id",
+      "comment" : "Business key of the date, a 16-character code.",
+      "label" : "Date Id",
+      "name" : "date_id"
+    }, {
+      "column" : "d_date_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Date",
+      "name" : "date_sk"
+    }, {
+      "column" : "d_day_name",
+      "comment" : "Name of the weekday, such as Monday.",
+      "label" : "Day Name",
+      "name" : "day_name"
+    }, {
+      "column" : "d_dom",
+      "comment" : "Day of month, 1 to 31.",
+      "label" : "Dom",
+      "name" : "dom"
+    }, {
+      "column" : "d_dow",
+      "comment" : "Day of week, 0 to 6 with 0 for Sunday.",
+      "label" : "Dow",
+      "name" : "dow"
+    }, {
+      "column" : "d_first_dom",
+      "comment" : "Surrogate key of the first day of this month.",
+      "label" : "First Dom",
+      "name" : "first_dom"
+    }, {
+      "column" : "d_following_holiday",
+      "comment" : "Y if the previous day was a holiday, otherwise N.",
+      "label" : "Following Holiday",
+      "name" : "following_holiday"
+    }, {
+      "column" : "d_fy_quarter_seq",
+      "comment" : "Fiscal quarters counted from the first one in the table.",
+      "label" : "Fy Quarter Seq",
+      "name" : "fy_quarter_seq"
+    }, {
+      "column" : "d_fy_week_seq",
+      "comment" : "Fiscal weeks counted from the first one in the table.",
+      "label" : "Fy Week Seq",
+      "name" : "fy_week_seq"
+    }, {
+      "column" : "d_fy_year",
+      "comment" : "Fiscal year.",
+      "label" : "Fy Year",
+      "name" : "fy_year"
+    }, {
+      "column" : "d_holiday",
+      "comment" : "Y if the day is a holiday, otherwise N.",
+      "label" : "Holiday",
+      "name" : "holiday"
+    }, {
+      "column" : "d_last_dom",
+      "comment" : "Surrogate key of the last day of this month.",
+      "label" : "Last Dom",
+      "name" : "last_dom"
+    }, {
+      "column" : "d_month_seq",
+      "comment" : "Months counted from the first month in the table; unique per month, so it orders months across years.",
+      "label" : "Month Seq",
+      "name" : "month_seq"
+    }, {
+      "column" : "d_moy",
+      "comment" : "Month of year, 1 to 12.",
+      "label" : "Moy",
+      "name" : "moy"
+    }, {
+      "column" : "d_qoy",
+      "comment" : "Quarter of year, 1 to 4.",
+      "label" : "Qoy",
+      "name" : "qoy"
+    }, {
+      "column" : "d_quarter_name",
+      "comment" : "Name of the quarter, such as 2001Q1.",
+      "label" : "Quarter Name",
+      "name" : "quarter_name"
+    }, {
+      "column" : "d_quarter_seq",
+      "comment" : "Quarters counted from the first quarter in the table; unique per quarter.",
+      "label" : "Quarter Seq",
+      "name" : "quarter_seq"
+    }, {
+      "column" : "d_same_day_lq",
+      "comment" : "Surrogate key of the same day one quarter earlier.",
+      "label" : "Same Day Lq",
+      "name" : "same_day_lq"
+    }, {
+      "column" : "d_same_day_ly",
+      "comment" : "Surrogate key of the same day one year earlier.",
+      "label" : "Same Day Ly",
+      "name" : "same_day_ly"
+    }, {
+      "column" : "d_week_seq",
+      "comment" : "Weeks counted from the first week in the table; unique per week.",
+      "label" : "Week Seq",
+      "name" : "week_seq"
+    }, {
+      "column" : "d_weekend",
+      "comment" : "Y if the day is on the weekend, otherwise N.",
+      "label" : "Weekend",
+      "name" : "weekend"
+    }, {
+      "column" : "d_year",
+      "comment" : "Calendar year.",
+      "label" : "Year",
+      "name" : "year"
+    } ],
+    "comment" : "One calendar day.",
+    "description" : "The date dimension: one row per day over about 200 years, with the calendar and fiscal fields needed to group by year, quarter, month, week and day of week. Almost every fact table joins here, often several times in different roles such as sold, shipped and returned.",
+    "label" : "date_dim",
+    "name" : "date_dim",
+    "table" : "date_dim"
+  }, {
+    "attributes" : [ {
+      "column" : "hd_buy_potential",
+      "comment" : "Buying potential of the household, as a range such as 1001-5000 or >10000.",
+      "label" : "Buy Potential",
+      "name" : "buy_potential"
+    }, {
+      "column" : "hd_demo_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Demo",
+      "name" : "demo_sk"
+    }, {
+      "column" : "hd_dep_count",
+      "comment" : "Number of dependents in the household.",
+      "label" : "Dep Count",
+      "name" : "dep_count"
+    }, {
+      "column" : "hd_income_band_sk",
+      "comment" : "Income range of the household. Foreign key to income_band.",
+      "label" : "Income Band",
+      "name" : "income_band_sk"
+    }, {
+      "column" : "hd_vehicle_count",
+      "comment" : "Number of vehicles in the household.",
+      "label" : "Vehicle Count",
+      "name" : "vehicle_count"
+    } ],
+    "comment" : "One combination of household attributes.",
+    "description" : "Household dimension: one row for each combination of income band, buy potential, dependent count and vehicle count. Shared by many households.",
+    "label" : "household_demographics",
+    "name" : "household_demographics",
+    "table" : "household_demographics"
+  }, {
+    "attributes" : [ {
+      "column" : "ib_income_band_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Income Band",
+      "name" : "income_band_sk"
+    }, {
+      "column" : "ib_lower_bound",
+      "comment" : "Lower bound of the income range, inclusive.",
+      "label" : "Lower Bound",
+      "name" : "lower_bound"
+    }, {
+      "column" : "ib_upper_bound",
+      "comment" : "Upper bound of the income range, inclusive.",
+      "label" : "Upper Bound",
+      "name" : "upper_bound"
+    } ],
+    "comment" : "An income range.",
+    "description" : "Twenty income ranges in steps of 10,000. household_demographics refers to one of them.",
+    "label" : "income_band",
+    "name" : "income_band",
+    "table" : "income_band"
+  }, {
+    "attributes" : [ {
+      "column" : "inv_date_sk",
+      "comment" : "Date of the snapshot. Foreign key to date_dim.",
+      "label" : "Date",
+      "name" : "date_sk"
+    }, {
+      "column" : "inv_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "inv_quantity_on_hand",
+      "comment" : "Units of the item in the warehouse on that date.",
+      "label" : "Quantity On Hand",
+      "name" : "quantity_on_hand"
+    }, {
+      "column" : "inv_warehouse_sk",
+      "comment" : "The warehouse the goods ship from, or where stock is counted. Foreign key to warehouse.",
+      "label" : "Warehouse",
+      "name" : "warehouse_sk"
+    } ],
+    "comment" : "Stock of one item in one warehouse in one week.",
+    "description" : "Inventory snapshot fact. One row per item, warehouse and date; the dates are weekly snapshots, not every day. Use quantity_on_hand to follow stock levels over time.",
+    "label" : "inventory",
+    "name" : "inventory",
+    "table" : "inventory"
+  }, {
+    "attributes" : [ {
+      "column" : "i_brand",
+      "comment" : "Brand name.",
+      "label" : "Brand",
+      "name" : "brand"
+    }, {
+      "column" : "i_brand_id",
+      "comment" : "Identifier of the brand.",
+      "label" : "Brand Id",
+      "name" : "brand_id"
+    }, {
+      "column" : "i_category",
+      "comment" : "Category of the item, such as Books, Music or Women.",
+      "label" : "Category",
+      "name" : "category"
+    }, {
+      "column" : "i_category_id",
+      "comment" : "Identifier of the category.",
+      "label" : "Category Id",
+      "name" : "category_id"
+    }, {
+      "column" : "i_class",
+      "comment" : "Class of the item inside its category.",
+      "label" : "Class",
+      "name" : "class"
+    }, {
+      "column" : "i_class_id",
+      "comment" : "Identifier of the class.",
+      "label" : "Class Id",
+      "name" : "class_id"
+    }, {
+      "column" : "i_color",
+      "comment" : "Color of the item.",
+      "label" : "Color",
+      "name" : "color"
+    }, {
+      "column" : "i_container",
+      "comment" : "Container the item is packed in.",
+      "label" : "Container",
+      "name" : "container"
+    }, {
+      "column" : "i_current_price",
+      "comment" : "Current list price of one unit.",
+      "label" : "Current Price",
+      "name" : "current_price"
+    }, {
+      "column" : "i_formulation",
+      "comment" : "Formulation of the item.",
+      "label" : "Formulation",
+      "name" : "formulation"
+    }, {
+      "column" : "i_item_desc",
+      "comment" : "Description of the item.",
+      "label" : "Item Desc",
+      "name" : "item_desc"
+    }, {
+      "column" : "i_item_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Item Id",
+      "name" : "item_id"
+    }, {
+      "column" : "i_item_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "i_manager_id",
+      "comment" : "Identifier of the manager responsible for the item.",
+      "label" : "Manager Id",
+      "name" : "manager_id"
+    }, {
+      "column" : "i_manufact",
+      "comment" : "Manufacturer name.",
+      "label" : "Manufact",
+      "name" : "manufact"
+    }, {
+      "column" : "i_manufact_id",
+      "comment" : "Identifier of the manufacturer.",
+      "label" : "Manufact Id",
+      "name" : "manufact_id"
+    }, {
+      "column" : "i_product_name",
+      "comment" : "Name of the product.",
+      "label" : "Product Name",
+      "name" : "product_name"
+    }, {
+      "column" : "i_rec_end_date",
+      "comment" : "Last day this version of the row was valid; empty for the current version.",
+      "label" : "Rec End Date",
+      "name" : "rec_end_date"
+    }, {
+      "column" : "i_rec_start_date",
+      "comment" : "First day this version of the row was valid.",
+      "label" : "Rec Start Date",
+      "name" : "rec_start_date"
+    }, {
+      "column" : "i_size",
+      "comment" : "Size of the item, such as small or large.",
+      "label" : "Size",
+      "name" : "size"
+    }, {
+      "column" : "i_units",
+      "comment" : "Unit of measure, such as Each or Dozen.",
+      "label" : "Units",
+      "name" : "units"
+    }, {
+      "column" : "i_wholesale_cost",
+      "comment" : "Wholesale cost of one unit.",
+      "label" : "Wholesale Cost",
+      "name" : "wholesale_cost"
+    } ],
+    "comment" : "A product that is sold.",
+    "description" : "The product dimension. Rows are versioned: rec_start_date and rec_end_date bound the period a version was valid, and the business key item_id repeats across versions while item_sk is unique. Brand, class, category and manufacturer are the usual levels to group by.",
+    "label" : "item",
+    "name" : "item",
+    "table" : "item"
+  }, {
+    "attributes" : [ {
+      "column" : "p_channel_catalog",
+      "comment" : "Y if the promotion ran in the catalog, otherwise N.",
+      "label" : "Channel Catalog",
+      "name" : "channel_catalog"
+    }, {
+      "column" : "p_channel_demo",
+      "comment" : "Y if the promotion ran as a demonstration, otherwise N.",
+      "label" : "Channel Demo",
+      "name" : "channel_demo"
+    }, {
+      "column" : "p_channel_details",
+      "comment" : "Details of how the promotion ran.",
+      "label" : "Channel Details",
+      "name" : "channel_details"
+    }, {
+      "column" : "p_channel_dmail",
+      "comment" : "Y if the promotion ran as direct mail, otherwise N.",
+      "label" : "Channel Dmail",
+      "name" : "channel_dmail"
+    }, {
+      "column" : "p_channel_email",
+      "comment" : "Y if the promotion ran as email, otherwise N.",
+      "label" : "Channel Email",
+      "name" : "channel_email"
+    }, {
+      "column" : "p_channel_event",
+      "comment" : "Y if the promotion ran at an event, otherwise N.",
+      "label" : "Channel Event",
+      "name" : "channel_event"
+    }, {
+      "column" : "p_channel_press",
+      "comment" : "Y if the promotion ran in the press, otherwise N.",
+      "label" : "Channel Press",
+      "name" : "channel_press"
+    }, {
+      "column" : "p_channel_radio",
+      "comment" : "Y if the promotion ran on radio, otherwise N.",
+      "label" : "Channel Radio",
+      "name" : "channel_radio"
+    }, {
+      "column" : "p_channel_tv",
+      "comment" : "Y if the promotion ran on television, otherwise N.",
+      "label" : "Channel Tv",
+      "name" : "channel_tv"
+    }, {
+      "column" : "p_cost",
+      "comment" : "Cost of the promotion.",
+      "label" : "Cost",
+      "name" : "cost"
+    }, {
+      "column" : "p_discount_active",
+      "comment" : "Y if the promotion's discount is active, otherwise N.",
+      "label" : "Discount Active",
+      "name" : "discount_active"
+    }, {
+      "column" : "p_end_date_sk",
+      "comment" : "Last day the row is valid or active. Foreign key to date_dim.",
+      "label" : "End Date",
+      "name" : "end_date_sk"
+    }, {
+      "column" : "p_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "p_promo_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Promo Id",
+      "name" : "promo_id"
+    }, {
+      "column" : "p_promo_name",
+      "comment" : "Name of the promotion.",
+      "label" : "Promo Name",
+      "name" : "promo_name"
+    }, {
+      "column" : "p_promo_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Promo",
+      "name" : "promo_sk"
+    }, {
+      "column" : "p_purpose",
+      "comment" : "Purpose of the promotion.",
+      "label" : "Purpose",
+      "name" : "purpose"
+    }, {
+      "column" : "p_response_target",
+      "comment" : "Target response of the promotion.",
+      "label" : "Response Target",
+      "name" : "response_target"
+    }, {
+      "column" : "p_start_date_sk",
+      "comment" : "First day the row is valid or active. Foreign key to date_dim.",
+      "label" : "Start Date",
+      "name" : "start_date_sk"
+    } ],
+    "comment" : "A promotion or marketing campaign.",
+    "description" : "Promotion dimension: the channels a campaign ran through, its cost, its period and the item it promotes. Sales rows point to the promotion that applied.",
+    "label" : "promotion",
+    "name" : "promotion",
+    "table" : "promotion"
+  }, {
+    "attributes" : [ {
+      "column" : "r_reason_desc",
+      "comment" : "Description of the reason, such as Package was damaged or Did not fit.",
+      "label" : "Reason Desc",
+      "name" : "reason_desc"
+    }, {
+      "column" : "r_reason_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Reason Id",
+      "name" : "reason_id"
+    }, {
+      "column" : "r_reason_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Reason",
+      "name" : "reason_sk"
+    } ],
+    "comment" : "A reason for a return.",
+    "description" : "Reason dimension for returns, for example a wrong size or a damaged item.",
+    "label" : "reason",
+    "name" : "reason",
+    "table" : "reason"
+  }, {
+    "attributes" : [ {
+      "column" : "sm_carrier",
+      "comment" : "Carrier that ships the goods.",
+      "label" : "Carrier",
+      "name" : "carrier"
+    }, {
+      "column" : "sm_code",
+      "comment" : "Code of the shipping type, such as AIR or SURFACE.",
+      "label" : "Code",
+      "name" : "code"
+    }, {
+      "column" : "sm_contract",
+      "comment" : "Contract with the carrier.",
+      "label" : "Contract",
+      "name" : "contract"
+    }, {
+      "column" : "sm_ship_mode_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Ship Mode Id",
+      "name" : "ship_mode_id"
+    }, {
+      "column" : "sm_ship_mode_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Ship Mode",
+      "name" : "ship_mode_sk"
+    }, {
+      "column" : "sm_type",
+      "comment" : "Type of shipping, such as EXPRESS, OVERNIGHT or REGULAR.",
+      "label" : "Type",
+      "name" : "type"
+    } ],
+    "comment" : "A way of shipping.",
+    "description" : "Shipping dimension: type, code, carrier and contract. Used by catalog and web sales and by catalog returns.",
+    "label" : "ship_mode",
+    "name" : "ship_mode",
+    "table" : "ship_mode"
+  }, {
+    "attributes" : [ {
+      "column" : "s_city",
+      "comment" : "City of the address.",
+      "label" : "City",
+      "name" : "city"
+    }, {
+      "column" : "s_closed_date_sk",
+      "comment" : "Day the location closed. Foreign key to date_dim.",
+      "label" : "Closed Date",
+      "name" : "closed_date_sk"
+    }, {
+      "column" : "s_company_id",
+      "comment" : "Identifier of the company.",
+      "label" : "Company Id",
+      "name" : "company_id"
+    }, {
+      "column" : "s_company_name",
+      "comment" : "Name of the company.",
+      "label" : "Company Name",
+      "name" : "company_name"
+    }, {
+      "column" : "s_country",
+      "comment" : "Country of the address.",
+      "label" : "Country",
+      "name" : "country"
+    }, {
+      "column" : "s_county",
+      "comment" : "County of the address.",
+      "label" : "County",
+      "name" : "county"
+    }, {
+      "column" : "s_division_id",
+      "comment" : "Identifier of the division.",
+      "label" : "Division Id",
+      "name" : "division_id"
+    }, {
+      "column" : "s_division_name",
+      "comment" : "Name of the division.",
+      "label" : "Division Name",
+      "name" : "division_name"
+    }, {
+      "column" : "s_floor_space",
+      "comment" : "Floor space in square feet.",
+      "label" : "Floor Space",
+      "name" : "floor_space"
+    }, {
+      "column" : "s_geography_class",
+      "comment" : "Geography class of the store, such as Unknown.",
+      "label" : "Geography Class",
+      "name" : "geography_class"
+    }, {
+      "column" : "s_gmt_offset",
+      "comment" : "Offset of the local time from GMT in hours, for example -5.00.",
+      "label" : "Gmt Offset",
+      "name" : "gmt_offset"
+    }, {
+      "column" : "s_hours",
+      "comment" : "Opening hours.",
+      "label" : "Hours",
+      "name" : "hours"
+    }, {
+      "column" : "s_manager",
+      "comment" : "Name of the manager.",
+      "label" : "Manager",
+      "name" : "manager"
+    }, {
+      "column" : "s_market_desc",
+      "comment" : "Description of the market.",
+      "label" : "Market Desc",
+      "name" : "market_desc"
+    }, {
+      "column" : "s_market_id",
+      "comment" : "Identifier of the market.",
+      "label" : "Market Id",
+      "name" : "market_id"
+    }, {
+      "column" : "s_market_manager",
+      "comment" : "Name of the market manager.",
+      "label" : "Market Manager",
+      "name" : "market_manager"
+    }, {
+      "column" : "s_number_employees",
+      "comment" : "Number of employees.",
+      "label" : "Number Employees",
+      "name" : "number_employees"
+    }, {
+      "column" : "s_rec_end_date",
+      "comment" : "Last day this version of the row was valid; empty for the current version.",
+      "label" : "Rec End Date",
+      "name" : "rec_end_date"
+    }, {
+      "column" : "s_rec_start_date",
+      "comment" : "First day this version of the row was valid.",
+      "label" : "Rec Start Date",
+      "name" : "rec_start_date"
+    }, {
+      "column" : "s_state",
+      "comment" : "Two-letter state code of the address.",
+      "label" : "State",
+      "name" : "state"
+    }, {
+      "column" : "s_store_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Store Id",
+      "name" : "store_id"
+    }, {
+      "column" : "s_store_name",
+      "comment" : "Name of the store.",
+      "label" : "Store Name",
+      "name" : "store_name"
+    }, {
+      "column" : "s_store_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Store",
+      "name" : "store_sk"
+    }, {
+      "column" : "s_street_name",
+      "comment" : "Street name of the address.",
+      "label" : "Street Name",
+      "name" : "street_name"
+    }, {
+      "column" : "s_street_number",
+      "comment" : "Street number of the address.",
+      "label" : "Street Number",
+      "name" : "street_number"
+    }, {
+      "column" : "s_street_type",
+      "comment" : "Street type of the address, such as Street, Avenue or Lane.",
+      "label" : "Street Type",
+      "name" : "street_type"
+    }, {
+      "column" : "s_suite_number",
+      "comment" : "Suite or apartment number of the address.",
+      "label" : "Suite Number",
+      "name" : "suite_number"
+    }, {
+      "column" : "s_tax_percentage",
+      "comment" : "Sales tax rate in percent.",
+      "label" : "Tax Percentage",
+      "name" : "tax_percentage"
+    }, {
+      "column" : "s_zip",
+      "comment" : "Postal code of the address.",
+      "label" : "Zip",
+      "name" : "zip"
+    } ],
+    "comment" : "A physical store.",
+    "description" : "The store dimension. Rows are versioned like items: s_rec_start_date and rec_end_date bound a version, the business key store_id repeats. Carries the store's manager, size, market, division, company, address and tax rate.",
+    "label" : "store",
+    "name" : "store",
+    "table" : "store"
+  }, {
+    "attributes" : [ {
+      "column" : "sr_addr_sk",
+      "comment" : "Address of the customer at the time of the purchase. Foreign key to customer_address.",
+      "label" : "Addr",
+      "name" : "addr_sk"
+    }, {
+      "column" : "sr_cdemo_sk",
+      "comment" : "Demographics of the customer. Foreign key to customer_demographics.",
+      "label" : "Cdemo",
+      "name" : "cdemo_sk"
+    }, {
+      "column" : "sr_customer_sk",
+      "comment" : "The customer. Foreign key to customer.",
+      "label" : "Customer",
+      "name" : "customer_sk"
+    }, {
+      "column" : "sr_fee",
+      "comment" : "Fee charged for processing the return.",
+      "label" : "Fee",
+      "name" : "fee"
+    }, {
+      "column" : "sr_hdemo_sk",
+      "comment" : "Household of the customer. Foreign key to household_demographics.",
+      "label" : "Hdemo",
+      "name" : "hdemo_sk"
+    }, {
+      "column" : "sr_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "sr_net_loss",
+      "comment" : "Loss on the returned line: refund plus fee plus shipping, less any money recovered.",
+      "label" : "Net Loss",
+      "name" : "net_loss"
+    }, {
+      "column" : "sr_reason_sk",
+      "comment" : "The reason for the return. Foreign key to reason.",
+      "label" : "Reason",
+      "name" : "reason_sk"
+    }, {
+      "column" : "sr_refunded_cash",
+      "comment" : "Part of the refund paid out in cash.",
+      "label" : "Refunded Cash",
+      "name" : "refunded_cash"
+    }, {
+      "column" : "sr_return_amt",
+      "comment" : "Amount refunded for the returned units, without tax.",
+      "label" : "Return Amt",
+      "name" : "return_amt"
+    }, {
+      "column" : "sr_return_amt_inc_tax",
+      "comment" : "Return amount plus tax.",
+      "label" : "Return Amt Inc Tax",
+      "name" : "return_amt_inc_tax"
+    }, {
+      "column" : "sr_return_quantity",
+      "comment" : "Number of units returned.",
+      "label" : "Return Quantity",
+      "name" : "return_quantity"
+    }, {
+      "column" : "sr_return_ship_cost",
+      "comment" : "Cost of shipping the goods back.",
+      "label" : "Return Ship Cost",
+      "name" : "return_ship_cost"
+    }, {
+      "column" : "sr_return_tax",
+      "comment" : "Tax refunded.",
+      "label" : "Return Tax",
+      "name" : "return_tax"
+    }, {
+      "column" : "sr_return_time_sk",
+      "comment" : "Time of day the goods were returned. Foreign key to time_dim.",
+      "label" : "Return Time",
+      "name" : "return_time_sk"
+    }, {
+      "column" : "sr_returned_date_sk",
+      "comment" : "Day the goods were returned. Foreign key to date_dim.",
+      "label" : "Returned Date",
+      "name" : "returned_date_sk"
+    }, {
+      "column" : "sr_reversed_charge",
+      "comment" : "Part of the refund put back on the customer's card.",
+      "label" : "Reversed Charge",
+      "name" : "reversed_charge"
+    }, {
+      "column" : "sr_store_credit",
+      "comment" : "Part of the refund given as store credit.",
+      "label" : "Store Credit",
+      "name" : "store_credit"
+    }, {
+      "column" : "sr_store_sk",
+      "comment" : "The store. Foreign key to store.",
+      "label" : "Store",
+      "name" : "store_sk"
+    }, {
+      "column" : "sr_ticket_number",
+      "comment" : "Number of the sales ticket; all line items of one purchase share it. Together with item_sk it identifies a row.",
+      "label" : "Ticket Number",
+      "name" : "ticket_number"
+    } ],
+    "comment" : "One line item returned to a store.",
+    "description" : "Store channel returns fact. One row per returned item. It belongs to the sale in store_sales with the same item and ticket number; use the sale link to join them. Money columns describe the whole returned line.",
+    "label" : "store_returns",
+    "name" : "store_returns",
+    "table" : "store_returns"
+  }, {
+    "attributes" : [ {
+      "column" : "ss_addr_sk",
+      "comment" : "Address of the customer at the time of the purchase. Foreign key to customer_address.",
+      "label" : "Addr",
+      "name" : "addr_sk"
+    }, {
+      "column" : "ss_cdemo_sk",
+      "comment" : "Demographics of the customer. Foreign key to customer_demographics.",
+      "label" : "Cdemo",
+      "name" : "cdemo_sk"
+    }, {
+      "column" : "ss_coupon_amt",
+      "comment" : "Value of coupons redeemed against the line.",
+      "label" : "Coupon Amt",
+      "name" : "coupon_amt"
+    }, {
+      "column" : "ss_customer_sk",
+      "comment" : "The customer. Foreign key to customer.",
+      "label" : "Customer",
+      "name" : "customer_sk"
+    }, {
+      "column" : "ss_ext_discount_amt",
+      "comment" : "Discount on the whole line: list price minus sales price, times quantity.",
+      "label" : "Ext Discount Amt",
+      "name" : "ext_discount_amt"
+    }, {
+      "column" : "ss_ext_list_price",
+      "comment" : "List price times quantity.",
+      "label" : "Ext List Price",
+      "name" : "ext_list_price"
+    }, {
+      "column" : "ss_ext_sales_price",
+      "comment" : "Sales price times quantity.",
+      "label" : "Ext Sales Price",
+      "name" : "ext_sales_price"
+    }, {
+      "column" : "ss_ext_tax",
+      "comment" : "Tax on the line.",
+      "label" : "Ext Tax",
+      "name" : "ext_tax"
+    }, {
+      "column" : "ss_ext_wholesale_cost",
+      "comment" : "Wholesale cost times quantity.",
+      "label" : "Ext Wholesale Cost",
+      "name" : "ext_wholesale_cost"
+    }, {
+      "column" : "ss_hdemo_sk",
+      "comment" : "Household of the customer. Foreign key to household_demographics.",
+      "label" : "Hdemo",
+      "name" : "hdemo_sk"
+    }, {
+      "column" : "ss_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "ss_list_price",
+      "comment" : "List price of one unit.",
+      "label" : "List Price",
+      "name" : "list_price"
+    }, {
+      "column" : "ss_net_paid",
+      "comment" : "Amount paid for the line: sales price times quantity less coupons, without tax and shipping.",
+      "label" : "Net Paid",
+      "name" : "net_paid"
+    }, {
+      "column" : "ss_net_paid_inc_tax",
+      "comment" : "Net paid plus tax.",
+      "label" : "Net Paid Inc Tax",
+      "name" : "net_paid_inc_tax"
+    }, {
+      "column" : "ss_net_profit",
+      "comment" : "Profit on the line: net paid less the wholesale cost.",
+      "label" : "Net Profit",
+      "name" : "net_profit"
+    }, {
+      "column" : "ss_promo_sk",
+      "comment" : "The promotion that applied. Foreign key to promotion.",
+      "label" : "Promo",
+      "name" : "promo_sk"
+    }, {
+      "column" : "ss_quantity",
+      "comment" : "Number of units sold on this line.",
+      "label" : "Quantity",
+      "name" : "quantity"
+    }, {
+      "column" : "ss_sales_price",
+      "comment" : "Price of one unit actually charged, after discount.",
+      "label" : "Sales Price",
+      "name" : "sales_price"
+    }, {
+      "column" : "ss_sold_date_sk",
+      "comment" : "Day the sale was made. Foreign key to date_dim.",
+      "label" : "Sold Date",
+      "name" : "sold_date_sk"
+    }, {
+      "column" : "ss_sold_time_sk",
+      "comment" : "Time of day the sale was made. Foreign key to time_dim.",
+      "label" : "Sold Time",
+      "name" : "sold_time_sk"
+    }, {
+      "column" : "ss_store_sk",
+      "comment" : "The store. Foreign key to store.",
+      "label" : "Store",
+      "name" : "store_sk"
+    }, {
+      "column" : "ss_ticket_number",
+      "comment" : "Number of the sales ticket; all line items of one purchase share it. Together with item_sk it identifies a row.",
+      "label" : "Ticket Number",
+      "name" : "ticket_number"
+    }, {
+      "column" : "ss_wholesale_cost",
+      "comment" : "Wholesale cost of one unit.",
+      "label" : "Wholesale Cost",
+      "name" : "wholesale_cost"
+    } ],
+    "comment" : "One line item sold in a store.",
+    "description" : "Store channel sales fact. One row per item on a sales ticket; the ticket number groups the line items of one purchase. Join to date_dim, time_dim, item, customer, store and promotion. Money columns are per unit (list_price, sales_price) or for the whole line (ext_* and net_*).",
+    "label" : "store_sales",
+    "name" : "store_sales",
+    "table" : "store_sales"
+  }, {
+    "attributes" : [ {
+      "column" : "t_am_pm",
+      "comment" : "AM or PM.",
+      "label" : "Am Pm",
+      "name" : "am_pm"
+    }, {
+      "column" : "t_hour",
+      "comment" : "Hour of the day, 0 to 23.",
+      "label" : "Hour",
+      "name" : "hour"
+    }, {
+      "column" : "t_meal_time",
+      "comment" : "Meal the time belongs to: breakfast, lunch or dinner; empty outside meal times.",
+      "label" : "Meal Time",
+      "name" : "meal_time"
+    }, {
+      "column" : "t_minute",
+      "comment" : "Minute of the hour, 0 to 59.",
+      "label" : "Minute",
+      "name" : "minute"
+    }, {
+      "column" : "t_second",
+      "comment" : "Second of the minute, 0 to 59.",
+      "label" : "Second",
+      "name" : "second"
+    }, {
+      "column" : "t_shift",
+      "comment" : "Work shift the time falls into: first, second or third.",
+      "label" : "Shift",
+      "name" : "shift"
+    }, {
+      "column" : "t_sub_shift",
+      "comment" : "Part of the shift: morning, afternoon, evening or night.",
+      "label" : "Sub Shift",
+      "name" : "sub_shift"
+    }, {
+      "column" : "t_time",
+      "comment" : "Seconds since midnight.",
+      "label" : "Time",
+      "name" : "time"
+    }, {
+      "column" : "t_time_id",
+      "comment" : "Business key of the time, a 16-character code.",
+      "label" : "Time Id",
+      "name" : "time_id"
+    }, {
+      "column" : "t_time_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Time",
+      "name" : "time_sk"
+    } ],
+    "comment" : "One second of the day.",
+    "description" : "The time-of-day dimension: one row per second of a 24-hour day, with hour, minute and the shift and meal time it falls into. Join it to a sales or returns row to analyse by time of day.",
+    "label" : "time_dim",
+    "name" : "time_dim",
+    "table" : "time_dim"
+  }, {
+    "attributes" : [ {
+      "column" : "w_city",
+      "comment" : "City of the address.",
+      "label" : "City",
+      "name" : "city"
+    }, {
+      "column" : "w_country",
+      "comment" : "Country of the address.",
+      "label" : "Country",
+      "name" : "country"
+    }, {
+      "column" : "w_county",
+      "comment" : "County of the address.",
+      "label" : "County",
+      "name" : "county"
+    }, {
+      "column" : "w_gmt_offset",
+      "comment" : "Offset of the local time from GMT in hours, for example -5.00.",
+      "label" : "Gmt Offset",
+      "name" : "gmt_offset"
+    }, {
+      "column" : "w_state",
+      "comment" : "Two-letter state code of the address.",
+      "label" : "State",
+      "name" : "state"
+    }, {
+      "column" : "w_street_name",
+      "comment" : "Street name of the address.",
+      "label" : "Street Name",
+      "name" : "street_name"
+    }, {
+      "column" : "w_street_number",
+      "comment" : "Street number of the address.",
+      "label" : "Street Number",
+      "name" : "street_number"
+    }, {
+      "column" : "w_street_type",
+      "comment" : "Street type of the address, such as Street, Avenue or Lane.",
+      "label" : "Street Type",
+      "name" : "street_type"
+    }, {
+      "column" : "w_suite_number",
+      "comment" : "Suite or apartment number of the address.",
+      "label" : "Suite Number",
+      "name" : "suite_number"
+    }, {
+      "column" : "w_warehouse_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Warehouse Id",
+      "name" : "warehouse_id"
+    }, {
+      "column" : "w_warehouse_name",
+      "comment" : "Name of the warehouse.",
+      "label" : "Warehouse Name",
+      "name" : "warehouse_name"
+    }, {
+      "column" : "w_warehouse_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Warehouse",
+      "name" : "warehouse_sk"
+    }, {
+      "column" : "w_warehouse_sq_ft",
+      "comment" : "Floor space in square feet.",
+      "label" : "Warehouse Sq Ft",
+      "name" : "warehouse_sq_ft"
+    }, {
+      "column" : "w_zip",
+      "comment" : "Postal code of the address.",
+      "label" : "Zip",
+      "name" : "zip"
+    } ],
+    "comment" : "A warehouse.",
+    "description" : "Warehouse dimension. Inventory is counted per warehouse, and catalog and web orders ship from one.",
+    "label" : "warehouse",
+    "name" : "warehouse",
+    "table" : "warehouse"
+  }, {
+    "attributes" : [ {
+      "column" : "wp_access_date_sk",
+      "comment" : "Day the page was last accessed. Foreign key to date_dim.",
+      "label" : "Access Date",
+      "name" : "access_date_sk"
+    }, {
+      "column" : "wp_autogen_flag",
+      "comment" : "Y if the page is generated automatically, otherwise N.",
+      "label" : "Autogen Flag",
+      "name" : "autogen_flag"
+    }, {
+      "column" : "wp_char_count",
+      "comment" : "Number of characters on the page.",
+      "label" : "Char Count",
+      "name" : "char_count"
+    }, {
+      "column" : "wp_creation_date_sk",
+      "comment" : "Day the page was created. Foreign key to date_dim.",
+      "label" : "Creation Date",
+      "name" : "creation_date_sk"
+    }, {
+      "column" : "wp_customer_sk",
+      "comment" : "The customer. Foreign key to customer.",
+      "label" : "Customer",
+      "name" : "customer_sk"
+    }, {
+      "column" : "wp_image_count",
+      "comment" : "Number of images on the page.",
+      "label" : "Image Count",
+      "name" : "image_count"
+    }, {
+      "column" : "wp_link_count",
+      "comment" : "Number of links on the page.",
+      "label" : "Link Count",
+      "name" : "link_count"
+    }, {
+      "column" : "wp_max_ad_count",
+      "comment" : "Maximum number of ads on the page.",
+      "label" : "Max Ad Count",
+      "name" : "max_ad_count"
+    }, {
+      "column" : "wp_rec_end_date",
+      "comment" : "Last day this version of the row was valid; empty for the current version.",
+      "label" : "Rec End Date",
+      "name" : "rec_end_date"
+    }, {
+      "column" : "wp_rec_start_date",
+      "comment" : "First day this version of the row was valid.",
+      "label" : "Rec Start Date",
+      "name" : "rec_start_date"
+    }, {
+      "column" : "wp_type",
+      "comment" : "Type of the page, such as welcome, order, ad or feedback.",
+      "label" : "Type",
+      "name" : "type"
+    }, {
+      "column" : "wp_url",
+      "comment" : "URL of the page.",
+      "label" : "Url",
+      "name" : "url"
+    }, {
+      "column" : "wp_web_page_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Web Page Id",
+      "name" : "web_page_id"
+    }, {
+      "column" : "wp_web_page_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Web Page",
+      "name" : "web_page_sk"
+    } ],
+    "comment" : "A page of a web site.",
+    "description" : "One page of a web site, with its type and size figures, valid for a date range. Web sales and returns point to the page the order came from.",
+    "label" : "web_page",
+    "name" : "web_page",
+    "table" : "web_page"
+  }, {
+    "attributes" : [ {
+      "column" : "wr_account_credit",
+      "comment" : "Part of the refund given as credit on the customer's account.",
+      "label" : "Account Credit",
+      "name" : "account_credit"
+    }, {
+      "column" : "wr_fee",
+      "comment" : "Fee charged for processing the return.",
+      "label" : "Fee",
+      "name" : "fee"
+    }, {
+      "column" : "wr_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "wr_net_loss",
+      "comment" : "Loss on the returned line: refund plus fee plus shipping, less any money recovered.",
+      "label" : "Net Loss",
+      "name" : "net_loss"
+    }, {
+      "column" : "wr_order_number",
+      "comment" : "Number of the order; all line items of one order share it. Together with item_sk it identifies a row.",
+      "label" : "Order Number",
+      "name" : "order_number"
+    }, {
+      "column" : "wr_reason_sk",
+      "comment" : "The reason for the return. Foreign key to reason.",
+      "label" : "Reason",
+      "name" : "reason_sk"
+    }, {
+      "column" : "wr_refunded_addr_sk",
+      "comment" : "Address of the customer who received the refund. Foreign key to customer_address.",
+      "label" : "Refunded Addr",
+      "name" : "refunded_addr_sk"
+    }, {
+      "column" : "wr_refunded_cash",
+      "comment" : "Part of the refund paid out in cash.",
+      "label" : "Refunded Cash",
+      "name" : "refunded_cash"
+    }, {
+      "column" : "wr_refunded_cdemo_sk",
+      "comment" : "Demographics of the customer who received the refund. Foreign key to customer_demographics.",
+      "label" : "Refunded Cdemo",
+      "name" : "refunded_cdemo_sk"
+    }, {
+      "column" : "wr_refunded_customer_sk",
+      "comment" : "Customer who paid and received the refund. Foreign key to customer.",
+      "label" : "Refunded Customer",
+      "name" : "refunded_customer_sk"
+    }, {
+      "column" : "wr_refunded_hdemo_sk",
+      "comment" : "Household of the customer who received the refund. Foreign key to household_demographics.",
+      "label" : "Refunded Hdemo",
+      "name" : "refunded_hdemo_sk"
+    }, {
+      "column" : "wr_return_amt",
+      "comment" : "Amount refunded for the returned units, without tax.",
+      "label" : "Return Amt",
+      "name" : "return_amt"
+    }, {
+      "column" : "wr_return_amt_inc_tax",
+      "comment" : "Return amount plus tax.",
+      "label" : "Return Amt Inc Tax",
+      "name" : "return_amt_inc_tax"
+    }, {
+      "column" : "wr_return_quantity",
+      "comment" : "Number of units returned.",
+      "label" : "Return Quantity",
+      "name" : "return_quantity"
+    }, {
+      "column" : "wr_return_ship_cost",
+      "comment" : "Cost of shipping the goods back.",
+      "label" : "Return Ship Cost",
+      "name" : "return_ship_cost"
+    }, {
+      "column" : "wr_return_tax",
+      "comment" : "Tax refunded.",
+      "label" : "Return Tax",
+      "name" : "return_tax"
+    }, {
+      "column" : "wr_returned_date_sk",
+      "comment" : "Day the goods were returned. Foreign key to date_dim.",
+      "label" : "Returned Date",
+      "name" : "returned_date_sk"
+    }, {
+      "column" : "wr_returned_time_sk",
+      "comment" : "Time of day the goods were returned. Foreign key to time_dim.",
+      "label" : "Returned Time",
+      "name" : "returned_time_sk"
+    }, {
+      "column" : "wr_returning_addr_sk",
+      "comment" : "Address of the customer who sent the goods back. Foreign key to customer_address.",
+      "label" : "Returning Addr",
+      "name" : "returning_addr_sk"
+    }, {
+      "column" : "wr_returning_cdemo_sk",
+      "comment" : "Demographics of the customer who sent the goods back. Foreign key to customer_demographics.",
+      "label" : "Returning Cdemo",
+      "name" : "returning_cdemo_sk"
+    }, {
+      "column" : "wr_returning_customer_sk",
+      "comment" : "Customer who sent the goods back. Foreign key to customer.",
+      "label" : "Returning Customer",
+      "name" : "returning_customer_sk"
+    }, {
+      "column" : "wr_returning_hdemo_sk",
+      "comment" : "Household of the customer who sent the goods back. Foreign key to household_demographics.",
+      "label" : "Returning Hdemo",
+      "name" : "returning_hdemo_sk"
+    }, {
+      "column" : "wr_reversed_charge",
+      "comment" : "Part of the refund put back on the customer's card.",
+      "label" : "Reversed Charge",
+      "name" : "reversed_charge"
+    }, {
+      "column" : "wr_web_page_sk",
+      "comment" : "The web page the order came from. Foreign key to web_page.",
+      "label" : "Web Page",
+      "name" : "web_page_sk"
+    } ],
+    "comment" : "One line item returned from a web order.",
+    "description" : "Web channel returns fact. It belongs to the sale in web_sales with the same item and order number. Refunded and returning customer are kept apart as in catalog_returns.",
+    "label" : "web_returns",
+    "name" : "web_returns",
+    "table" : "web_returns"
+  }, {
+    "attributes" : [ {
+      "column" : "ws_bill_addr_sk",
+      "comment" : "Billing address. Foreign key to customer_address.",
+      "label" : "Bill Addr",
+      "name" : "bill_addr_sk"
+    }, {
+      "column" : "ws_bill_cdemo_sk",
+      "comment" : "Demographics of the customer who is billed. Foreign key to customer_demographics.",
+      "label" : "Bill Cdemo",
+      "name" : "bill_cdemo_sk"
+    }, {
+      "column" : "ws_bill_customer_sk",
+      "comment" : "Customer who is billed for the order. Foreign key to customer.",
+      "label" : "Bill Customer",
+      "name" : "bill_customer_sk"
+    }, {
+      "column" : "ws_bill_hdemo_sk",
+      "comment" : "Household of the customer who is billed. Foreign key to household_demographics.",
+      "label" : "Bill Hdemo",
+      "name" : "bill_hdemo_sk"
+    }, {
+      "column" : "ws_coupon_amt",
+      "comment" : "Value of coupons redeemed against the line.",
+      "label" : "Coupon Amt",
+      "name" : "coupon_amt"
+    }, {
+      "column" : "ws_ext_discount_amt",
+      "comment" : "Discount on the whole line: list price minus sales price, times quantity.",
+      "label" : "Ext Discount Amt",
+      "name" : "ext_discount_amt"
+    }, {
+      "column" : "ws_ext_list_price",
+      "comment" : "List price times quantity.",
+      "label" : "Ext List Price",
+      "name" : "ext_list_price"
+    }, {
+      "column" : "ws_ext_sales_price",
+      "comment" : "Sales price times quantity.",
+      "label" : "Ext Sales Price",
+      "name" : "ext_sales_price"
+    }, {
+      "column" : "ws_ext_ship_cost",
+      "comment" : "Shipping cost of the line.",
+      "label" : "Ext Ship Cost",
+      "name" : "ext_ship_cost"
+    }, {
+      "column" : "ws_ext_tax",
+      "comment" : "Tax on the line.",
+      "label" : "Ext Tax",
+      "name" : "ext_tax"
+    }, {
+      "column" : "ws_ext_wholesale_cost",
+      "comment" : "Wholesale cost times quantity.",
+      "label" : "Ext Wholesale Cost",
+      "name" : "ext_wholesale_cost"
+    }, {
+      "column" : "ws_item_sk",
+      "comment" : "The item sold, returned or counted. Foreign key to item.",
+      "label" : "Item",
+      "name" : "item_sk"
+    }, {
+      "column" : "ws_list_price",
+      "comment" : "List price of one unit.",
+      "label" : "List Price",
+      "name" : "list_price"
+    }, {
+      "column" : "ws_net_paid",
+      "comment" : "Amount paid for the line: sales price times quantity less coupons, without tax and shipping.",
+      "label" : "Net Paid",
+      "name" : "net_paid"
+    }, {
+      "column" : "ws_net_paid_inc_ship",
+      "comment" : "Net paid plus shipping cost.",
+      "label" : "Net Paid Inc Ship",
+      "name" : "net_paid_inc_ship"
+    }, {
+      "column" : "ws_net_paid_inc_ship_tax",
+      "comment" : "Net paid plus shipping cost and tax.",
+      "label" : "Net Paid Inc Ship Tax",
+      "name" : "net_paid_inc_ship_tax"
+    }, {
+      "column" : "ws_net_paid_inc_tax",
+      "comment" : "Net paid plus tax.",
+      "label" : "Net Paid Inc Tax",
+      "name" : "net_paid_inc_tax"
+    }, {
+      "column" : "ws_net_profit",
+      "comment" : "Profit on the line: net paid less the wholesale cost.",
+      "label" : "Net Profit",
+      "name" : "net_profit"
+    }, {
+      "column" : "ws_order_number",
+      "comment" : "Number of the order; all line items of one order share it. Together with item_sk it identifies a row.",
+      "label" : "Order Number",
+      "name" : "order_number"
+    }, {
+      "column" : "ws_promo_sk",
+      "comment" : "The promotion that applied. Foreign key to promotion.",
+      "label" : "Promo",
+      "name" : "promo_sk"
+    }, {
+      "column" : "ws_quantity",
+      "comment" : "Number of units sold on this line.",
+      "label" : "Quantity",
+      "name" : "quantity"
+    }, {
+      "column" : "ws_sales_price",
+      "comment" : "Price of one unit actually charged, after discount.",
+      "label" : "Sales Price",
+      "name" : "sales_price"
+    }, {
+      "column" : "ws_ship_addr_sk",
+      "comment" : "Shipping address. Foreign key to customer_address.",
+      "label" : "Ship Addr",
+      "name" : "ship_addr_sk"
+    }, {
+      "column" : "ws_ship_cdemo_sk",
+      "comment" : "Demographics of the customer the goods are shipped to. Foreign key to customer_demographics.",
+      "label" : "Ship Cdemo",
+      "name" : "ship_cdemo_sk"
+    }, {
+      "column" : "ws_ship_customer_sk",
+      "comment" : "Customer the goods are shipped to. Foreign key to customer.",
+      "label" : "Ship Customer",
+      "name" : "ship_customer_sk"
+    }, {
+      "column" : "ws_ship_date_sk",
+      "comment" : "Day the goods were shipped. Foreign key to date_dim.",
+      "label" : "Ship Date",
+      "name" : "ship_date_sk"
+    }, {
+      "column" : "ws_ship_hdemo_sk",
+      "comment" : "Household of the customer the goods are shipped to. Foreign key to household_demographics.",
+      "label" : "Ship Hdemo",
+      "name" : "ship_hdemo_sk"
+    }, {
+      "column" : "ws_ship_mode_sk",
+      "comment" : "How the goods are shipped. Foreign key to ship_mode.",
+      "label" : "Ship Mode",
+      "name" : "ship_mode_sk"
+    }, {
+      "column" : "ws_sold_date_sk",
+      "comment" : "Day the sale was made. Foreign key to date_dim.",
+      "label" : "Sold Date",
+      "name" : "sold_date_sk"
+    }, {
+      "column" : "ws_sold_time_sk",
+      "comment" : "Time of day the sale was made. Foreign key to time_dim.",
+      "label" : "Sold Time",
+      "name" : "sold_time_sk"
+    }, {
+      "column" : "ws_warehouse_sk",
+      "comment" : "The warehouse the goods ship from, or where stock is counted. Foreign key to warehouse.",
+      "label" : "Warehouse",
+      "name" : "warehouse_sk"
+    }, {
+      "column" : "ws_web_page_sk",
+      "comment" : "The web page the order came from. Foreign key to web_page.",
+      "label" : "Web Page",
+      "name" : "web_page_sk"
+    }, {
+      "column" : "ws_web_site_sk",
+      "comment" : "The web site the order was placed on. Foreign key to web_site.",
+      "label" : "Web Site",
+      "name" : "web_site_sk"
+    }, {
+      "column" : "ws_wholesale_cost",
+      "comment" : "Wholesale cost of one unit.",
+      "label" : "Wholesale Cost",
+      "name" : "wholesale_cost"
+    } ],
+    "comment" : "One line item sold through the web site.",
+    "description" : "Web channel sales fact. One row per item on a web order. As in catalog_sales the billing and shipping customer, demographics and address are kept apart.",
+    "label" : "web_sales",
+    "name" : "web_sales",
+    "table" : "web_sales"
+  }, {
+    "attributes" : [ {
+      "column" : "web_city",
+      "comment" : "City of the address.",
+      "label" : "City",
+      "name" : "city"
+    }, {
+      "column" : "web_class",
+      "comment" : "Class of the web site.",
+      "label" : "Class",
+      "name" : "class"
+    }, {
+      "column" : "web_close_date_sk",
+      "comment" : "Day the location closed. Foreign key to date_dim.",
+      "label" : "Close Date",
+      "name" : "close_date_sk"
+    }, {
+      "column" : "web_company_id",
+      "comment" : "Identifier of the company.",
+      "label" : "Company Id",
+      "name" : "company_id"
+    }, {
+      "column" : "web_company_name",
+      "comment" : "Name of the company.",
+      "label" : "Company Name",
+      "name" : "company_name"
+    }, {
+      "column" : "web_country",
+      "comment" : "Country of the address.",
+      "label" : "Country",
+      "name" : "country"
+    }, {
+      "column" : "web_county",
+      "comment" : "County of the address.",
+      "label" : "County",
+      "name" : "county"
+    }, {
+      "column" : "web_gmt_offset",
+      "comment" : "Offset of the local time from GMT in hours, for example -5.00.",
+      "label" : "Gmt Offset",
+      "name" : "gmt_offset"
+    }, {
+      "column" : "web_manager",
+      "comment" : "Name of the manager.",
+      "label" : "Manager",
+      "name" : "manager"
+    }, {
+      "column" : "web_market_manager",
+      "comment" : "Name of the market manager.",
+      "label" : "Market Manager",
+      "name" : "market_manager"
+    }, {
+      "column" : "web_mkt_class",
+      "comment" : "Class of the market.",
+      "label" : "Mkt Class",
+      "name" : "mkt_class"
+    }, {
+      "column" : "web_mkt_desc",
+      "comment" : "Description of the market.",
+      "label" : "Mkt Desc",
+      "name" : "mkt_desc"
+    }, {
+      "column" : "web_mkt_id",
+      "comment" : "Identifier of the market.",
+      "label" : "Mkt Id",
+      "name" : "mkt_id"
+    }, {
+      "column" : "web_name",
+      "comment" : "Name.",
+      "label" : "Name",
+      "name" : "name"
+    }, {
+      "column" : "web_open_date_sk",
+      "comment" : "Day the location opened. Foreign key to date_dim.",
+      "label" : "Open Date",
+      "name" : "open_date_sk"
+    }, {
+      "column" : "web_rec_end_date",
+      "comment" : "Last day this version of the row was valid; empty for the current version.",
+      "label" : "Rec End Date",
+      "name" : "rec_end_date"
+    }, {
+      "column" : "web_rec_start_date",
+      "comment" : "First day this version of the row was valid.",
+      "label" : "Rec Start Date",
+      "name" : "rec_start_date"
+    }, {
+      "column" : "web_site_id",
+      "comment" : "Business key of the row, a 16-character code. It stays the same over versions of a changing row, while the surrogate key identifies one version.",
+      "label" : "Site Id",
+      "name" : "site_id"
+    }, {
+      "column" : "web_site_sk",
+      "comment" : "Surrogate key. One value per row (per version for versioned dimensions); facts reference the row by it.",
+      "label" : "Site",
+      "name" : "site_sk"
+    }, {
+      "column" : "web_state",
+      "comment" : "Two-letter state code of the address.",
+      "label" : "State",
+      "name" : "state"
+    }, {
+      "column" : "web_street_name",
+      "comment" : "Street name of the address.",
+      "label" : "Street Name",
+      "name" : "street_name"
+    }, {
+      "column" : "web_street_number",
+      "comment" : "Street number of the address.",
+      "label" : "Street Number",
+      "name" : "street_number"
+    }, {
+      "column" : "web_street_type",
+      "comment" : "Street type of the address, such as Street, Avenue or Lane.",
+      "label" : "Street Type",
+      "name" : "street_type"
+    }, {
+      "column" : "web_suite_number",
+      "comment" : "Suite or apartment number of the address.",
+      "label" : "Suite Number",
+      "name" : "suite_number"
+    }, {
+      "column" : "web_tax_percentage",
+      "comment" : "Sales tax rate in percent.",
+      "label" : "Tax Percentage",
+      "name" : "tax_percentage"
+    }, {
+      "column" : "web_zip",
+      "comment" : "Postal code of the address.",
+      "label" : "Zip",
+      "name" : "zip"
+    } ],
+    "comment" : "A web site.",
+    "description" : "Web site dimension, versioned like items. Web sales point to the site the order was placed on.",
+    "label" : "web_site",
+    "name" : "web_site",
+    "table" : "web_site"
+  } ],
+  "label" : "tpcds",
+  "links" : [ {
+    "comment" : "Day the location closed.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "closed_date",
+    "name" : "same_closed_date",
+    "relations" : [ "fk_call_center_cc_closed_date_sk", "fk_store_s_closed_date_sk" ]
+  }, {
+    "comment" : "Day the location opened.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "open_date",
+    "name" : "same_open_date",
+    "relations" : [ "fk_call_center_cc_open_date_sk", "fk_web_site_web_open_date_sk" ]
+  }, {
+    "comment" : "Last day the row is valid or active.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "end_date",
+    "name" : "same_end_date",
+    "relations" : [ "fk_catalog_page_cp_end_date_sk", "fk_promotion_p_end_date_sk" ]
+  }, {
+    "comment" : "First day the row is valid or active.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "start_date",
+    "name" : "same_start_date",
+    "relations" : [ "fk_catalog_page_cp_start_date_sk", "fk_promotion_p_start_date_sk" ]
+  }, {
+    "comment" : "The sale this return belongs to, joined on item and ticket or order number.",
+    "description" : "Joins a return to the sale it returns, on item and on ticket or order number.",
+    "label" : "sale",
+    "name" : "same_sale",
+    "relations" : [ "fk_catalog_returns_catalog_sales", "fk_store_returns_store_sales", "fk_web_returns_web_sales" ]
+  }, {
+    "comment" : "The call center that took the order.",
+    "description" : "Joins to call_center through the foreign key of the same role.",
+    "label" : "call_center",
+    "name" : "same_call_center",
+    "relations" : [ "fk_catalog_returns_cr_call_center_sk", "fk_catalog_sales_cs_call_center_sk" ]
+  }, {
+    "comment" : "The catalog page the item was ordered from.",
+    "description" : "Joins to catalog_page through the foreign key of the same role.",
+    "label" : "catalog_page",
+    "name" : "same_catalog_page",
+    "relations" : [ "fk_catalog_returns_cr_catalog_page_sk", "fk_catalog_sales_cs_catalog_page_sk" ]
+  }, {
+    "comment" : "The item sold, returned or counted.",
+    "description" : "Joins to item through the foreign key of the same role.",
+    "label" : "item",
+    "name" : "same_item",
+    "relations" : [ "fk_catalog_returns_cr_item_sk", "fk_catalog_sales_cs_item_sk", "fk_inventory_inv_item_sk", "fk_promotion_p_item_sk", "fk_store_returns_sr_item_sk", "fk_store_sales_ss_item_sk", "fk_web_returns_wr_item_sk", "fk_web_sales_ws_item_sk" ]
+  }, {
+    "comment" : "The reason for the return.",
+    "description" : "Joins to reason through the foreign key of the same role.",
+    "label" : "reason",
+    "name" : "same_reason",
+    "relations" : [ "fk_catalog_returns_cr_reason_sk", "fk_store_returns_sr_reason_sk", "fk_web_returns_wr_reason_sk" ]
+  }, {
+    "comment" : "Address of the customer who received the refund.",
+    "description" : "Joins to customer_address through the foreign key of the same role.",
+    "label" : "refunded_addr",
+    "name" : "same_refunded_addr",
+    "relations" : [ "fk_catalog_returns_cr_refunded_addr_sk", "fk_web_returns_wr_refunded_addr_sk" ]
+  }, {
+    "comment" : "Demographics of the customer who received the refund.",
+    "description" : "Joins to customer_demographics through the foreign key of the same role.",
+    "label" : "refunded_cdemo",
+    "name" : "same_refunded_cdemo",
+    "relations" : [ "fk_catalog_returns_cr_refunded_cdemo_sk", "fk_web_returns_wr_refunded_cdemo_sk" ]
+  }, {
+    "comment" : "Customer who paid and received the refund.",
+    "description" : "Joins to customer through the foreign key of the same role.",
+    "label" : "refunded_customer",
+    "name" : "same_refunded_customer",
+    "relations" : [ "fk_catalog_returns_cr_refunded_customer_sk", "fk_web_returns_wr_refunded_customer_sk" ]
+  }, {
+    "comment" : "Household of the customer who received the refund.",
+    "description" : "Joins to household_demographics through the foreign key of the same role.",
+    "label" : "refunded_hdemo",
+    "name" : "same_refunded_hdemo",
+    "relations" : [ "fk_catalog_returns_cr_refunded_hdemo_sk", "fk_web_returns_wr_refunded_hdemo_sk" ]
+  }, {
+    "comment" : "Day the goods were returned.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "returned_date",
+    "name" : "same_returned_date",
+    "relations" : [ "fk_catalog_returns_cr_returned_date_sk", "fk_store_returns_sr_returned_date_sk", "fk_web_returns_wr_returned_date_sk" ]
+  }, {
+    "comment" : "Time of day the goods were returned.",
+    "description" : "Joins to time_dim through the foreign key of the same role.",
+    "label" : "returned_time",
+    "name" : "same_returned_time",
+    "relations" : [ "fk_catalog_returns_cr_returned_time_sk", "fk_web_returns_wr_returned_time_sk" ]
+  }, {
+    "comment" : "Address of the customer who sent the goods back.",
+    "description" : "Joins to customer_address through the foreign key of the same role.",
+    "label" : "returning_addr",
+    "name" : "same_returning_addr",
+    "relations" : [ "fk_catalog_returns_cr_returning_addr_sk", "fk_web_returns_wr_returning_addr_sk" ]
+  }, {
+    "comment" : "Demographics of the customer who sent the goods back.",
+    "description" : "Joins to customer_demographics through the foreign key of the same role.",
+    "label" : "returning_cdemo",
+    "name" : "same_returning_cdemo",
+    "relations" : [ "fk_catalog_returns_cr_returning_cdemo_sk", "fk_web_returns_wr_returning_cdemo_sk" ]
+  }, {
+    "comment" : "Customer who sent the goods back.",
+    "description" : "Joins to customer through the foreign key of the same role.",
+    "label" : "returning_customer",
+    "name" : "same_returning_customer",
+    "relations" : [ "fk_catalog_returns_cr_returning_customer_sk", "fk_web_returns_wr_returning_customer_sk" ]
+  }, {
+    "comment" : "Household of the customer who sent the goods back.",
+    "description" : "Joins to household_demographics through the foreign key of the same role.",
+    "label" : "returning_hdemo",
+    "name" : "same_returning_hdemo",
+    "relations" : [ "fk_catalog_returns_cr_returning_hdemo_sk", "fk_web_returns_wr_returning_hdemo_sk" ]
+  }, {
+    "comment" : "How the goods are shipped.",
+    "description" : "Joins to ship_mode through the foreign key of the same role.",
+    "label" : "ship_mode",
+    "name" : "same_ship_mode",
+    "relations" : [ "fk_catalog_returns_cr_ship_mode_sk", "fk_catalog_sales_cs_ship_mode_sk", "fk_web_sales_ws_ship_mode_sk" ]
+  }, {
+    "comment" : "The warehouse the goods ship from, or where stock is counted.",
+    "description" : "Joins to warehouse through the foreign key of the same role.",
+    "label" : "warehouse",
+    "name" : "same_warehouse",
+    "relations" : [ "fk_catalog_returns_cr_warehouse_sk", "fk_catalog_sales_cs_warehouse_sk", "fk_inventory_inv_warehouse_sk", "fk_web_sales_ws_warehouse_sk" ]
+  }, {
+    "comment" : "Billing address.",
+    "description" : "Joins to customer_address through the foreign key of the same role.",
+    "label" : "bill_addr",
+    "name" : "same_bill_addr",
+    "relations" : [ "fk_catalog_sales_cs_bill_addr_sk", "fk_web_sales_ws_bill_addr_sk" ]
+  }, {
+    "comment" : "Demographics of the customer who is billed.",
+    "description" : "Joins to customer_demographics through the foreign key of the same role.",
+    "label" : "bill_cdemo",
+    "name" : "same_bill_cdemo",
+    "relations" : [ "fk_catalog_sales_cs_bill_cdemo_sk", "fk_web_sales_ws_bill_cdemo_sk" ]
+  }, {
+    "comment" : "Customer who is billed for the order.",
+    "description" : "Joins to customer through the foreign key of the same role.",
+    "label" : "bill_customer",
+    "name" : "same_bill_customer",
+    "relations" : [ "fk_catalog_sales_cs_bill_customer_sk", "fk_web_sales_ws_bill_customer_sk" ]
+  }, {
+    "comment" : "Household of the customer who is billed.",
+    "description" : "Joins to household_demographics through the foreign key of the same role.",
+    "label" : "bill_hdemo",
+    "name" : "same_bill_hdemo",
+    "relations" : [ "fk_catalog_sales_cs_bill_hdemo_sk", "fk_web_sales_ws_bill_hdemo_sk" ]
+  }, {
+    "comment" : "The promotion that applied.",
+    "description" : "Joins to promotion through the foreign key of the same role.",
+    "label" : "promo",
+    "name" : "same_promo",
+    "relations" : [ "fk_catalog_sales_cs_promo_sk", "fk_store_sales_ss_promo_sk", "fk_web_sales_ws_promo_sk" ]
+  }, {
+    "comment" : "Shipping address.",
+    "description" : "Joins to customer_address through the foreign key of the same role.",
+    "label" : "ship_addr",
+    "name" : "same_ship_addr",
+    "relations" : [ "fk_catalog_sales_cs_ship_addr_sk", "fk_web_sales_ws_ship_addr_sk" ]
+  }, {
+    "comment" : "Demographics of the customer the goods are shipped to.",
+    "description" : "Joins to customer_demographics through the foreign key of the same role.",
+    "label" : "ship_cdemo",
+    "name" : "same_ship_cdemo",
+    "relations" : [ "fk_catalog_sales_cs_ship_cdemo_sk", "fk_web_sales_ws_ship_cdemo_sk" ]
+  }, {
+    "comment" : "Customer the goods are shipped to.",
+    "description" : "Joins to customer through the foreign key of the same role.",
+    "label" : "ship_customer",
+    "name" : "same_ship_customer",
+    "relations" : [ "fk_catalog_sales_cs_ship_customer_sk", "fk_web_sales_ws_ship_customer_sk" ]
+  }, {
+    "comment" : "Day the goods were shipped.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "ship_date",
+    "name" : "same_ship_date",
+    "relations" : [ "fk_catalog_sales_cs_ship_date_sk", "fk_web_sales_ws_ship_date_sk" ]
+  }, {
+    "comment" : "Household of the customer the goods are shipped to.",
+    "description" : "Joins to household_demographics through the foreign key of the same role.",
+    "label" : "ship_hdemo",
+    "name" : "same_ship_hdemo",
+    "relations" : [ "fk_catalog_sales_cs_ship_hdemo_sk", "fk_web_sales_ws_ship_hdemo_sk" ]
+  }, {
+    "comment" : "Day the sale was made.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "sold_date",
+    "name" : "same_sold_date",
+    "relations" : [ "fk_catalog_sales_cs_sold_date_sk", "fk_store_sales_ss_sold_date_sk", "fk_web_sales_ws_sold_date_sk" ]
+  }, {
+    "comment" : "Time of day the sale was made.",
+    "description" : "Joins to time_dim through the foreign key of the same role.",
+    "label" : "sold_time",
+    "name" : "same_sold_time",
+    "relations" : [ "fk_catalog_sales_cs_sold_time_sk", "fk_store_sales_ss_sold_time_sk", "fk_web_sales_ws_sold_time_sk" ]
+  }, {
+    "comment" : "Current address of the customer.",
+    "description" : "Joins to customer_address through the foreign key of the same role.",
+    "label" : "current_addr",
+    "name" : "same_current_addr",
+    "relations" : [ "fk_customer_c_current_addr_sk" ]
+  }, {
+    "comment" : "Current demographics of the customer.",
+    "description" : "Joins to customer_demographics through the foreign key of the same role.",
+    "label" : "current_cdemo",
+    "name" : "same_current_cdemo",
+    "relations" : [ "fk_customer_c_current_cdemo_sk" ]
+  }, {
+    "comment" : "Current household of the customer.",
+    "description" : "Joins to household_demographics through the foreign key of the same role.",
+    "label" : "current_hdemo",
+    "name" : "same_current_hdemo",
+    "relations" : [ "fk_customer_c_current_hdemo_sk" ]
+  }, {
+    "comment" : "Day of the customer's first purchase.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "first_sales_date",
+    "name" : "same_first_sales_date",
+    "relations" : [ "fk_customer_c_first_sales_date_sk" ]
+  }, {
+    "comment" : "Day of the customer's first shipment.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "first_shipto_date",
+    "name" : "same_first_shipto_date",
+    "relations" : [ "fk_customer_c_first_shipto_date_sk" ]
+  }, {
+    "comment" : "Day of the customer's last review.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "last_review_date",
+    "name" : "same_last_review_date",
+    "relations" : [ "fk_customer_c_last_review_date_sk" ]
+  }, {
+    "comment" : "Income range of the household.",
+    "description" : "Joins to income_band through the foreign key of the same role.",
+    "label" : "income_band",
+    "name" : "same_income_band",
+    "relations" : [ "fk_household_demographics_hd_income_band_sk" ]
+  }, {
+    "comment" : "Date of the snapshot.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "date",
+    "name" : "same_date",
+    "relations" : [ "fk_inventory_inv_date_sk" ]
+  }, {
+    "comment" : "Address of the customer at the time of the purchase.",
+    "description" : "Joins to customer_address through the foreign key of the same role.",
+    "label" : "addr",
+    "name" : "same_addr",
+    "relations" : [ "fk_store_returns_sr_addr_sk", "fk_store_sales_ss_addr_sk" ]
+  }, {
+    "comment" : "Demographics of the customer.",
+    "description" : "Joins to customer_demographics through the foreign key of the same role.",
+    "label" : "cdemo",
+    "name" : "same_cdemo",
+    "relations" : [ "fk_store_returns_sr_cdemo_sk", "fk_store_sales_ss_cdemo_sk" ]
+  }, {
+    "comment" : "The customer.",
+    "description" : "Joins to customer through the foreign key of the same role.",
+    "label" : "customer",
+    "name" : "same_customer",
+    "relations" : [ "fk_store_returns_sr_customer_sk", "fk_store_sales_ss_customer_sk", "fk_web_page_wp_customer_sk" ]
+  }, {
+    "comment" : "Household of the customer.",
+    "description" : "Joins to household_demographics through the foreign key of the same role.",
+    "label" : "hdemo",
+    "name" : "same_hdemo",
+    "relations" : [ "fk_store_returns_sr_hdemo_sk", "fk_store_sales_ss_hdemo_sk" ]
+  }, {
+    "comment" : "Time of day the goods were returned.",
+    "description" : "Joins to time_dim through the foreign key of the same role.",
+    "label" : "return_time",
+    "name" : "same_return_time",
+    "relations" : [ "fk_store_returns_sr_return_time_sk" ]
+  }, {
+    "comment" : "The store.",
+    "description" : "Joins to store through the foreign key of the same role.",
+    "label" : "store",
+    "name" : "same_store",
+    "relations" : [ "fk_store_returns_sr_store_sk", "fk_store_sales_ss_store_sk" ]
+  }, {
+    "comment" : "Day the page was last accessed.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "access_date",
+    "name" : "same_access_date",
+    "relations" : [ "fk_web_page_wp_access_date_sk" ]
+  }, {
+    "comment" : "Day the page was created.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "creation_date",
+    "name" : "same_creation_date",
+    "relations" : [ "fk_web_page_wp_creation_date_sk" ]
+  }, {
+    "comment" : "The web page the order came from.",
+    "description" : "Joins to web_page through the foreign key of the same role.",
+    "label" : "web_page",
+    "name" : "same_web_page",
+    "relations" : [ "fk_web_returns_wr_web_page_sk", "fk_web_sales_ws_web_page_sk" ]
+  }, {
+    "comment" : "The web site the order was placed on.",
+    "description" : "Joins to web_site through the foreign key of the same role.",
+    "label" : "web_site",
+    "name" : "same_web_site",
+    "relations" : [ "fk_web_sales_ws_web_site_sk" ]
+  }, {
+    "comment" : "Day the location closed.",
+    "description" : "Joins to date_dim through the foreign key of the same role.",
+    "label" : "close_date",
+    "name" : "same_close_date",
+    "relations" : [ "fk_web_site_web_close_date_sk" ]
+  } ],
+  "name" : "tpcds",
+  "notions" : { }
+}

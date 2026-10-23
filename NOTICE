@@ -1,0 +1,16 @@
+NOTICE
+------
+
+Third-Party Content
+--------------------
+
+TPC-DS
+------
+
+The schema, table and column names and the key structure of the catalogs in this project follow
+the TPC-DS benchmark specification of the Transaction Processing Performance Council (TPC),
+https://www.tpc.org/tpcds/. The descriptions are written for this project. No TPC-DS data
+generator code, query templates or data are included.
+
+"TPC-DS" is a trademark of the Transaction Processing Performance Council. This project is not a
+TPC-DS benchmark result and makes no claim of compliance with the specification.

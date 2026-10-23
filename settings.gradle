@@ -1,0 +1,13 @@
+rootProject.name = 'tpcds'
+
+dependencyResolutionManagement {
+    // Do not allow subprojects to define other repositories
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+
+    // No mavenLocal(): nothing here depends on another koryki artifact.
+    repositories {
+        mavenCentral()
+    }
+}
+
+include 'catalog'
