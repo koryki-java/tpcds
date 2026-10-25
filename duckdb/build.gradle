@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+description = 'The TPC-DS sample database for DuckDB, part of koryki\'s shared test-data project: ' +
+        'the prebuilt tpcds.duckdb file, generated at a small scale factor, used to test SQL/KQL ' +
+        'query engines against a decision-support dataset.'
+
+// The program that builds tpcds.duckdb. A source set of its own, so neither it nor the DuckDB driver
+// ends up in the published jar or its POM.
+sourceSets {
+    builder
+}
+
+dependencies {
+    builderImplementation libs.duckdb
+
+    testImplementation libs.duckdb
+    testImplementation libs.jackson.databind
+    testImplementation platform(libs.junit.bom)
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform.launcher
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// 0.01 is about 1 percent of the standard 1 GB data set. Small enough to travel inside a jar and to
+// fit a Cloud Run container, large enough that every table has rows.
+def scaleFactor = providers.gradleProperty('koryki.tpcds.sf').orElse('0.01')
+def databaseDir = 'src/main/resources/ai/koryki/duckdb/databases/tpcds'
+def builtDatabase = layout.buildDirectory.file('tpcds.duckdb')
+
+tasks.register('buildDatabase', JavaExec) {
+    group = 'build'
+    description = 'Builds build/tpcds.duckdb with dsdgen. Fetches the tpcds extension on first use.'
+    classpath = sourceSets.builder.runtimeClasspath
+    mainClass = 'ai.koryki.tpcds.duckdb.BuildDatabase'
+    inputs.property('scaleFactor', scaleFactor)
+    outputs.file(builtDatabase)
+    args(scaleFactor.get(), builtDatabase.get().asFile.path)
+}
+
+tasks.register('updateDatabase') {
+    group = 'build'
+    description = 'Replaces the committed tpcds.duckdb with a fresh build.'
+    dependsOn 'buildDatabase'
+    def source = builtDatabase
+    def target = file("$databaseDir/tpcds.duckdb")
+    doLast {
+        java.nio.file.Files.copy(source.get().asFile.toPath(), target.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        logger.lifecycle("Replaced $target")
+    }
+}
+
+// So that `updateDatabase test` checks and packages the database just written.
+tasks.named('processResources') { mustRunAfter 'updateDatabase' }
+tasks.named('test') { mustRunAfter 'updateDatabase' }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'koryki-tpcds-duckdb'
+            pom {
+                name = 'koryki-tpcds-duckdb'
+            }
+        }
+    }
+}

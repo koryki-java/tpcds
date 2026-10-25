@@ -11,3 +11,4 @@ dependencyResolutionManagement {
 }
 
 include 'catalog'
+include 'duckdb'

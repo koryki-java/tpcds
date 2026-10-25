@@ -7,16 +7,23 @@ engines against a wide, snowflake-shaped schema.
 | Module | Holds | Consumed as |
 |---|---|---|
 | [`catalog`](catalog/README.md) | `db.json` and `model/en/model.json` of the TPC-DS database for DuckDB | Maven artifact `ai.koryki.tpcds:koryki-tpcds-catalog` |
+| `duckdb` | the prebuilt `tpcds.duckdb`, generated at scale factor 0.01 (about 12 MB) | Maven artifact `ai.koryki.tpcds:koryki-tpcds-duckdb` |
 
 ## The database
 
 24 tables: seven fact tables (store, catalog and web sales and returns, plus inventory) and 17
-dimensions. The data is **not** in this repository; DuckDB generates it:
+dimensions. The `duckdb` module carries the data at scale factor **0.01**, about 1 percent of the
+standard 1 GB data set: small enough to travel in a jar and to fit a Cloud Run container. DuckDB's
+`dsdgen` generates it, deterministically:
 
-```sql
-INSTALL tpcds; LOAD tpcds;
-CALL dsdgen(sf = 1);
+```bash
+./gradlew :duckdb:updateDatabase                       # rebuild the committed file
+./gradlew :duckdb:updateDatabase -Pkoryki.tpcds.sf=1   # another scale factor, e.g. for a local run
 ```
+
+The build fetches DuckDB's `tpcds` extension once; reading the committed file needs no network. A
+bigger file does not belong in this repository: use `-Pkoryki.tpcds.sf=1` locally and keep the
+result outside it.
 
 The generated tables have **no declared keys**. The catalog supplies them: primary keys, 104
 foreign keys from surrogate keys (`*_sk`) to dimensions, and three composite ones from each returns
