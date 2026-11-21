@@ -27,9 +27,12 @@ test {
     useJUnitPlatform()
 }
 
-// 0.01 is about 1 percent of the standard 1 GB data set. Small enough to travel inside a jar and to
-// fit a Cloud Run container, large enough that every table has rows.
-def scaleFactor = providers.gradleProperty('koryki.tpcds.sf').orElse('0.01')
+// 0.1 is about 10 percent of the standard 1 GB data set: a 38 MB file, 20 MB inside the jar. Small
+// enough to travel inside a jar and to be copied into the memory of a Cloud Run container, large
+// enough that grouped questions have something to group (at 0.01 only 111 of the brands have ten
+// sales rows, at 0.1 it is 518, and every state and every category-by-year cell has sales).
+// Beyond that the shape stops improving and the numbers just get bigger.
+def scaleFactor = providers.gradleProperty('koryki.tpcds.sf').orElse('0.1')
 def databaseDir = 'src/main/resources/ai/koryki/duckdb/databases/tpcds'
 def builtDatabase = layout.buildDirectory.file('tpcds.duckdb')
 
