@@ -1,0 +1,3 @@
+total_sales : store_sales.total_sales
+customers : customer.customers
+employees : store.total_employees

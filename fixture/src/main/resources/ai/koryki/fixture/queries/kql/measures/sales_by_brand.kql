@@ -1,0 +1,5 @@
+// The best brands of one category (Ossie model: sales_by_brand).
+FIND store_sales ss, ss VIA same_item item i
+FILTER i.category = 'Music'
+FETCH i.brand, agg(ss.total_sales) total_sales DESC
+LIMIT 10

@@ -1,0 +1,8 @@
+WITH
+aggd1 AS (
+ FIND store_sales ss, ss VIA same_item item i
+ FETCH DISTINCT ss.item_sk i1, ss.ticket_number i2, i.category k1, ss.ext_sales_price c1),
+aggm1 AS (FIND aggd1 x FETCH x.k1 k1, sum(x.c1) v1)
+FIND aggm1 t
+ FILTER max(t.v1) > 1000000
+ FETCH t.k1 category, max(t.v1) total_sales DESC

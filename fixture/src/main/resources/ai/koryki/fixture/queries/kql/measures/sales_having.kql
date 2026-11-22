@@ -1,0 +1,4 @@
+// A predicate on a measure becomes HAVING.
+FIND store_sales ss, ss VIA same_item item i
+FILTER agg(ss.total_sales) > 1000000
+FETCH i.category, agg(ss.total_sales) total_sales DESC

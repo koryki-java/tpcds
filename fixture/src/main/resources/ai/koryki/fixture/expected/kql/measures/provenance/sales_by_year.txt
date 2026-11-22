@@ -1,0 +1,3 @@
+total_sales : store_sales.total_sales
+total_profit : store_sales.total_profit
+total_quantity : store_sales.total_quantity

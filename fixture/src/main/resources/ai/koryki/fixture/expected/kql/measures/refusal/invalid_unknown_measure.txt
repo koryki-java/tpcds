@@ -1,0 +1,1 @@
+agg(ss.total_revenue): table 'store_sales' has no measure 'total_revenue'

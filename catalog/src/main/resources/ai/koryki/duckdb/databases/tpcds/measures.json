@@ -1,0 +1,47 @@
+{
+  "tables": {
+    "store_sales": [
+      {
+        "name": "total_sales",
+        "label": "Total sales",
+        "expression": "sum(ss_ext_sales_price)",
+        "concept": {
+          "typeFamily": "DECIMAL"
+        }
+      },
+      {
+        "name": "total_profit",
+        "label": "Total profit",
+        "expression": "sum(ss_net_profit)",
+        "concept": {
+          "typeFamily": "DECIMAL"
+        }
+      },
+      {
+        "name": "total_quantity",
+        "label": "Total quantity",
+        "expression": "sum(ss_quantity)",
+        "concept": {
+          "typeFamily": "INTEGER"
+        }
+      }
+    ],
+    "store": [
+      {
+        "name": "total_employees",
+        "label": "Employees",
+        "expression": "sum(s_number_employees)",
+        "concept": {
+          "typeFamily": "INTEGER"
+        }
+      }
+    ],
+    "customer": [
+      {
+        "name": "customers",
+        "label": "Customers",
+        "expression": "count(c_customer_sk)"
+      }
+    ]
+  }
+}

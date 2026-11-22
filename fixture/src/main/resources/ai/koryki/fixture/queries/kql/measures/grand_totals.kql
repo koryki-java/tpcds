@@ -1,0 +1,3 @@
+// Measures of three tables over one join, no group key: one row.
+FIND store_sales ss, ss VIA same_customer customer c, ss VIA same_store store s
+FETCH agg(ss.total_sales) total_sales, agg(c.customers) customers, agg(s.total_employees) employees

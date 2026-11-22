@@ -1,0 +1,14 @@
+WITH
+aggd1 AS (
+ FIND store_sales ss, ss VIA same_customer customer c
+ FETCH DISTINCT ss.item_sk i1, ss.ticket_number i2, ss.ext_sales_price c1),
+aggm1 AS (FIND aggd1 x FETCH sum(x.c1) v1),
+aggd2 AS (
+ FIND store_sales ss, ss VIA same_customer customer c
+ FETCH DISTINCT c.customer_sk i1, c.customer_sk c1),
+aggm2 AS (FIND aggd2 x FETCH count(x.c1) v2),
+aggu AS (FIND aggm1 a FETCH a.v1 v1, to_integer(NULL) v2
+ UNIONALL
+ FIND aggm2 a FETCH to_decimal(NULL, 18, 4) v1, a.v2 v2)
+FIND aggu t
+ FETCH max(t.v1) / max(t.v2) value_per_customer

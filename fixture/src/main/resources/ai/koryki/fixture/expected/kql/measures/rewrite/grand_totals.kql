@@ -1,0 +1,20 @@
+WITH
+aggd1 AS (
+ FIND store_sales ss, ss VIA same_customer customer c, ss VIA same_store store s
+ FETCH DISTINCT ss.item_sk i1, ss.ticket_number i2, ss.ext_sales_price c1),
+aggm1 AS (FIND aggd1 x FETCH sum(x.c1) v1),
+aggd2 AS (
+ FIND store_sales ss, ss VIA same_customer customer c, ss VIA same_store store s
+ FETCH DISTINCT c.customer_sk i1, c.customer_sk c1),
+aggm2 AS (FIND aggd2 x FETCH count(x.c1) v2),
+aggd3 AS (
+ FIND store_sales ss, ss VIA same_customer customer c, ss VIA same_store store s
+ FETCH DISTINCT s.store_sk i1, s.number_employees c1),
+aggm3 AS (FIND aggd3 x FETCH sum(x.c1) v3),
+aggu AS (FIND aggm1 a FETCH a.v1 v1, to_integer(NULL) v2, to_integer(NULL) v3
+ UNIONALL
+ FIND aggm2 a FETCH to_decimal(NULL, 18, 4) v1, a.v2 v2, to_integer(NULL) v3
+ UNIONALL
+ FIND aggm3 a FETCH to_decimal(NULL, 18, 4) v1, to_integer(NULL) v2, a.v3 v3)
+FIND aggu t
+ FETCH max(t.v1) total_sales, max(t.v2) customers, max(t.v3) employees

@@ -1,0 +1,4 @@
+year : INTEGER
+total_sales : DECIMAL
+total_profit : DECIMAL
+total_quantity : INTEGER

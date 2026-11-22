@@ -1,0 +1,4 @@
+// A ratio of two measures of one table, in one year.
+FIND store_sales ss, ss VIA same_sold_date date_dim d
+FILTER d.year = 2001
+FETCH d.year, agg(ss.total_profit) / agg(ss.total_sales) margin

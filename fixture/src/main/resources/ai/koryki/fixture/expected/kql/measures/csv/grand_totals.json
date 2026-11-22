@@ -1,0 +1,3 @@
+total_sales : DECIMAL
+customers : INTEGER
+employees : INTEGER

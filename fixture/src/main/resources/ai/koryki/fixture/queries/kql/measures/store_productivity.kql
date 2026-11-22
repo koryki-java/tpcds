@@ -1,0 +1,3 @@
+// Ossie's store_productivity (spec appendix B.6): sales per employee, the employees of a store counted once however many sales it made.
+FIND store_sales ss, ss VIA same_store store s
+FETCH s.state, agg(ss.total_sales) / nullif(agg(s.total_employees), 0) per_employee
