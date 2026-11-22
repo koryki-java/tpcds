@@ -36,6 +36,38 @@ The generated tables have **no declared keys**. The catalog supplies them: prima
 foreign keys from surrogate keys (`*_sk`) to dimensions, and three composite ones from each returns
 table to its sales table (item plus ticket or order number).
 
+## Architecture: where the data lives
+
+Three places, by size, and nothing large is ever committed:
+
+| What | Where | Size |
+|---|---|---|
+| catalog (`db.json`, `model.json`) and the scale factor 0.1 database | the two jars, from Maven | 38 MB |
+| scale factor 1 database | `data/sf1/tpcds.duckdb` locally (git-ignored); a Cloud Storage bucket in production | 315 MB |
+| the service | one Cloud Run service per application (`koryki-java/demosrv`), which opens whichever file it is told to | |
+
+```
+scripts/restore-data.sh  ->  data/sf1/tpcds.duckdb  --gcloud storage cp-->  gs://<bucket>/tpcds/sf1/
+                                                                                  |  Cloud Run volume (GCS FUSE),
+                                                                                  |  read-only, same region
+                                                                                  v
+                                        demosrv/tpcds   TPCDS_DATABASE_PATH=/mnt/data/tpcds/sf1/tpcds.duckdb
+```
+
+- **Restore.** `data/` is recreated by `scripts/restore-data.sh`; `dsdgen` is deterministic, so every machine
+  and the bucket hold the same bytes.
+- **Upload.** `./gradlew :duckdb:printUploadCommands -Pbucket=<bucket>` prints the `gcloud` commands (bucket,
+  copy, volume flags, env var) and runs none of them.
+- **Serve.** Cloud Run mounts the bucket as a read-only volume (Cloud Storage FUSE) and the service opens the
+  file in place, read-only. It is not copied: Cloud Run's writable disk is in memory and would count
+  against the instance's memory. With `TPCDS_DATABASE_PATH` unset the service uses the database in the jar,
+  so a local run and the tests need no bucket. Set and missing, it does not start: a silent fallback would
+  answer from the wrong data.
+- **Why a bucket and not Filestore.** Filestore is an NFS server with a minimum of about 1 TiB and a
+  matching price; a bucket holding a file this size costs cents. Same region as the service (us-central1).
+- **If reads over FUSE are too slow**, copy the file to local disk at start (about 315 MB of instance memory)
+  or export the tables as Parquet. Measure first.
+
 ## How the catalog was made
 
 Extracted with the introspection of `incubator/ingest` (`JdbcSchemaReader`, `SchemaModelBuilder`)

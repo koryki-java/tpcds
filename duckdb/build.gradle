@@ -75,6 +75,30 @@ tasks.register('restoreData', JavaExec) {
     args(dataScaleFactor.get(), target.asFile.path)
 }
 
+// Prints, and does not run, the commands that put the restored file into a Cloud Storage bucket and
+// let a Cloud Run service read it: the upload is the person's to run (see README, "Architecture").
+//   ./gradlew :duckdb:printUploadCommands -Pbucket=my-bucket [-Pkoryki.tpcds.data.sf=1]
+tasks.register('printUploadCommands') {
+    group = 'help'
+    description = 'Prints the gcloud commands that upload data/sf<N>/tpcds.duckdb to -Pbucket. Runs nothing.'
+    doLast {
+        if (!project.hasProperty('bucket')) {
+            throw new GradleException('missing -Pbucket=<bucket name>')
+        }
+        def bucket = project.property('bucket')
+        def sf = dataScaleFactor.get()
+        println """
+gcloud storage buckets create gs://${bucket} --location=us-central1 --uniform-bucket-level-access
+gcloud storage cp data/sf${sf}/tpcds.duckdb gs://${bucket}/tpcds/sf${sf}/tpcds.duckdb
+
+# the service reads the bucket as a read-only volume, with this env var:
+#   --add-volume=name=data,type=cloud-storage,bucket=${bucket},readonly=true
+#   --add-volume-mount=volume=data,mount-path=/mnt/data
+#   --set-env-vars=TPCDS_DATABASE_PATH=/mnt/data/tpcds/sf${sf}/tpcds.duckdb
+# and its service account needs roles/storage.objectViewer on the bucket."""
+    }
+}
+
 // So that `updateDatabase test` checks and packages the database just written.
 tasks.named('processResources') { mustRunAfter 'updateDatabase' }
 tasks.named('test') { mustRunAfter 'updateDatabase' }
