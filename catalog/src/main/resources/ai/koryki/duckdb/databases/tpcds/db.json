@@ -2450,6 +2450,7 @@
         "comment" : "Day of month, 1 to 31.",
         "dialectType" : "BIGINT",
         "label" : "Dom",
+        "presentation" : "PLAIN",
         "typeFamily" : "INTEGER"
       },
       "name" : "d_dom",
@@ -2461,6 +2462,7 @@
         "comment" : "Day of week, 0 to 6 with 0 for Sunday.",
         "dialectType" : "BIGINT",
         "label" : "Dow",
+        "presentation" : "PLAIN",
         "typeFamily" : "INTEGER"
       },
       "name" : "d_dow",
@@ -2516,6 +2518,7 @@
         "comment" : "Fiscal year.",
         "dialectType" : "BIGINT",
         "label" : "Fy Year",
+        "presentation" : "PLAIN",
         "typeFamily" : "INTEGER"
       },
       "name" : "d_fy_year",
@@ -2560,6 +2563,7 @@
         "comment" : "Month of year, 1 to 12.",
         "dialectType" : "BIGINT",
         "label" : "Moy",
+        "presentation" : "PLAIN",
         "typeFamily" : "INTEGER"
       },
       "name" : "d_moy",
@@ -2571,6 +2575,7 @@
         "comment" : "Quarter of year, 1 to 4.",
         "dialectType" : "BIGINT",
         "label" : "Qoy",
+        "presentation" : "PLAIN",
         "typeFamily" : "INTEGER"
       },
       "name" : "d_qoy",
@@ -2648,6 +2653,7 @@
         "comment" : "Calendar year.",
         "dialectType" : "BIGINT",
         "label" : "Year",
+        "presentation" : "PLAIN",
         "typeFamily" : "INTEGER"
       },
       "name" : "d_year",
@@ -4210,6 +4216,7 @@
         "comment" : "Hour of the day, 0 to 23.",
         "dialectType" : "BIGINT",
         "label" : "Hour",
+        "presentation" : "PLAIN",
         "typeFamily" : "INTEGER"
       },
       "name" : "t_hour",
