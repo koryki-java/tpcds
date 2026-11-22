@@ -1,0 +1,1 @@
+per_employee ~ store_sales.total_sales, store.total_employees
