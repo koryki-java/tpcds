@@ -59,6 +59,22 @@ tasks.register('updateDatabase') {
     }
 }
 
+// The large local database, kept OUTSIDE the jar and the repository: <root>/data/sf<N>/tpcds.duckdb.
+// data/ is git-ignored; this task (via scripts/restore-data.sh) recreates it on any machine, byte for
+// byte, because dsdgen is deterministic. Default scale factor 1 (the standard 1 GB data set);
+// ./gradlew :duckdb:restoreData -Pkoryki.tpcds.data.sf=10 for another.
+def dataScaleFactor = providers.gradleProperty('koryki.tpcds.data.sf').orElse('1')
+tasks.register('restoreData', JavaExec) {
+    group = 'build'
+    description = 'Builds data/sf<N>/tpcds.duckdb at the scale factor given by -Pkoryki.tpcds.data.sf (default 1).'
+    classpath = sourceSets.builder.runtimeClasspath
+    mainClass = 'ai.koryki.tpcds.duckdb.BuildDatabase'
+    inputs.property('scaleFactor', dataScaleFactor)
+    def target = rootProject.layout.projectDirectory.file("data/sf${dataScaleFactor.get()}/tpcds.duckdb")
+    outputs.file(target)
+    args(dataScaleFactor.get(), target.asFile.path)
+}
+
 // So that `updateDatabase test` checks and packages the database just written.
 tasks.named('processResources') { mustRunAfter 'updateDatabase' }
 tasks.named('test') { mustRunAfter 'updateDatabase' }

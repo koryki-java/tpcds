@@ -39,3 +39,6 @@ bin/
 .DS_Store
 /.idea/
 
+
+### Local data (restored by scripts/restore-data.sh, never committed) ###
+/data/

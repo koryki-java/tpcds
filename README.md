@@ -24,8 +24,13 @@ group. DuckDB's
 ```
 
 The build fetches DuckDB's `tpcds` extension once; reading the committed file needs no network. A
-file beyond this size does not belong in this repository: use `-Pkoryki.tpcds.sf=1` locally and keep the
-result outside it.
+file beyond this size does not belong in this repository. The standard data set lives in the
+git-ignored `data/` directory and is recreated by script on any machine:
+
+```bash
+scripts/restore-data.sh        # data/sf1/tpcds.duckdb, scale factor 1 (about 315 MB file)
+scripts/restore-data.sh 10     # another scale factor
+```
 
 The generated tables have **no declared keys**. The catalog supplies them: primary keys, 104
 foreign keys from surrogate keys (`*_sk`) to dimensions, and three composite ones from each returns
