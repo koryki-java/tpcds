@@ -37,6 +37,8 @@ subprojects {
         apply plugin: 'com.diffplug.spotless'
         spotless {
             java {
+                // explicit, as in koryki-java/core: nothing under build/ is formatted
+                target 'src/**/*.java'
                 googleJavaFormat(libs.versions.google.java.format.get()).aosp()
             }
         }
