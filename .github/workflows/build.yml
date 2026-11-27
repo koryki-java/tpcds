@@ -1,0 +1,75 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # No secrets. Every dependency resolves from mavenCentral(), so this workflow runs the same
+    # whoever triggered it -- which is the point: a run triggered by Dependabot is handed the
+    # Dependabot secret store rather than this repository's, so a build that needs a secret to
+    # resolve its dependencies fails on every Dependabot pull request and nowhere else.
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      # gradle-wrapper.jar is the first thing the build runs: check it against Gradle's published
+      # checksums, so a jar swapped in a pull request is caught before it runs.
+      - uses: gradle/actions/wrapper-validation@v6
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # While koryki-northwind is pinned to a SNAPSHOT (a branch developed together with northwind),
+      # it is not on Central. The submodule is that very source at the pinned commit, so build it
+      # into the runner's local repository, which settings.gradle reads first for ai.koryki. Once the
+      # pin is a release this step does nothing.
+      - name: Build the pinned northwind SNAPSHOT
+        run: |
+          pin=$(sed -n 's/^koryki-northwind = "\(.*\)"/\1/p' gradle/libs.versions.toml)
+          case "$pin" in
+            *-SNAPSHOT)
+              built=$(sed -n 's/^version=//p' northwind-fixtures/gradle.properties)
+              if [ "$built" != "$pin" ]; then
+                echo "::error::gradle/libs.versions.toml pins northwind $pin, but the northwind-fixtures submodule is at $built: move the submodule to the commit that carries $pin"
+                exit 1
+              fi
+              (cd northwind-fixtures && ./gradlew publishToMavenLocal -x test --no-daemon)
+              ;;
+          esac
+
+      - name: Check formatting
+        run: ./gradlew spotlessCheck --no-daemon
+
+      - name: Test
+        run: ./gradlew test --no-daemon
+
+      # MariaDB, MSSQL, Oracle, PostgreSQL, Snowflake, and Trino each gate their engine tests behind
+      # an availability check for a live server (see e.g. MariadbAvailabilityCondition) -- none of
+      # which exist in this runner. Those test classes are skipped, not failed; DuckDB and SQLite
+      # (embedded, no server needed) run for real and give actual regression coverage.
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/'
+
+      # No pass/fail gate on coverage -- this is visibility, not enforcement -- so it uploads
+      # whether the tests passed or not. MariaDB/MSSQL/Oracle/PostgreSQL/Snowflake/Trino report
+      # near-zero coverage here since their engine tests skip without a live server (see above).
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-reports
+          path: '**/build/reports/jacoco/'
