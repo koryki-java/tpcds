@@ -1,0 +1,3 @@
+// Refused: store_sales has no such measure.
+FIND store_sales ss, ss VIA same_sold_date date_dim d
+FETCH d.year, agg(ss.total_revenue)

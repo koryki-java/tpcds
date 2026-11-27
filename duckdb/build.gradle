@@ -59,6 +59,61 @@ tasks.register('updateDatabase') {
     }
 }
 
+// The large local database, kept OUTSIDE the jar and the repository: <root>/data/sf<N>/tpcds.duckdb.
+// data/ is git-ignored; this task (via scripts/restore-data.sh) recreates it on any machine, byte for
+// byte, because dsdgen is deterministic. Default scale factor 1 (the standard 1 GB data set);
+// ./gradlew :duckdb:restoreData -Pkoryki.tpcds.data.sf=10 for another.
+def dataScaleFactor = providers.gradleProperty('koryki.tpcds.data.sf').orElse('1')
+tasks.register('restoreData', JavaExec) {
+    group = 'build'
+    description = 'Builds data/sf<N>/tpcds.duckdb at the scale factor given by -Pkoryki.tpcds.data.sf (default 1).'
+    classpath = sourceSets.builder.runtimeClasspath
+    mainClass = 'ai.koryki.tpcds.duckdb.BuildDatabase'
+    inputs.property('scaleFactor', dataScaleFactor)
+    def target = rootProject.layout.projectDirectory.file("data/sf${dataScaleFactor.get()}/tpcds.duckdb")
+    outputs.file(target)
+    args(dataScaleFactor.get(), target.asFile.path)
+}
+
+// Prints, and does not run, the commands that put the restored file into a Cloud Storage bucket and
+// let a Cloud Run service read it: the upload is the person's to run (see README, "Architecture").
+//   cd tpcds && ./gradlew :duckdb:printUploadCommands -Pbucket=<bucket name> [-Pproject=<id>]
+// Run it HERE, in koryki-java/tpcds: demosrv has no :duckdb project. The bucket is a name of your own
+// choosing, unique among all of Google's buckets (such as ai-koryki-demo-data), not a region.
+tasks.register('printUploadCommands') {
+    group = 'help'
+    description = 'Prints the gcloud commands that upload data/sf<N>/tpcds.duckdb to -Pbucket. Runs nothing.'
+    def sf = dataScaleFactor
+    def gcpProject = providers.gradleProperty('project').orElse('ai-koryki-demo')
+    def file = rootProject.layout.projectDirectory.file("data/sf${sf.get()}/tpcds.duckdb")
+    doLast {
+        if (!project.hasProperty('bucket')) {
+            throw new GradleException('missing -Pbucket=<bucket name>, e.g. -Pbucket=ai-koryki-demo-data')
+        }
+        def bucket = project.property('bucket').toString()
+        if (!(bucket ==~ /[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/)) {
+            throw new GradleException("'${bucket}' is not a valid bucket name (3-63 characters: lower case, digits, - _ .)")
+        }
+        if (bucket ==~ /[a-z]+-[a-z]+[0-9]+/) {
+            throw new GradleException("'${bucket}' looks like a region, not a bucket name. The region " +
+                    "(us-central1) is fixed in the commands; -Pbucket is a name of your own, e.g. ai-koryki-demo-data")
+        }
+        if (!file.asFile.isFile()) {
+            logger.warn("note: ${file.asFile} does not exist yet; run scripts/restore-data.sh first")
+        }
+        def p = gcpProject.get()
+        println """
+gcloud storage buckets create gs://${bucket} --project ${p} --location=us-central1 --uniform-bucket-level-access
+gcloud storage cp ${file.asFile} gs://${bucket}/tpcds/sf${sf.get()}/tpcds.duckdb
+
+# the service reads the bucket as a read-only volume, with this env var:
+#   --add-volume=name=data,type=cloud-storage,bucket=${bucket},readonly=true
+#   --add-volume-mount=volume=data,mount-path=/mnt/data
+#   --set-env-vars=TPCDS_DATABASE_PATH=/mnt/data/tpcds/sf${sf.get()}/tpcds.duckdb
+# and its service account needs roles/storage.objectViewer on the bucket."""
+    }
+}
+
 // So that `updateDatabase test` checks and packages the database just written.
 tasks.named('processResources') { mustRunAfter 'updateDatabase' }
 tasks.named('test') { mustRunAfter 'updateDatabase' }

@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+description = 'Test-fixture corpus for the measures of the TPC-DS catalog: queries with agg() and the goldens ' +
+        'of the rewriter (koryki-java/measures). Same layout as the corpus of koryki-java/northwind, whose ' +
+        'SPEC.md is the contract. Not published to Maven Central: read from a checkout.'
+
+dependencies {
+    testImplementation platform(libs.junit.bom)
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform.launcher
+}
+
+test {
+    useJUnitPlatform()
+    // CorpusIntegrityTest reads the corpus from the source tree, not from the classpath.
+    inputs.dir('src/main/resources/ai/koryki/fixture')
+            .withPropertyName('corpus')
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+}

@@ -1,0 +1,3 @@
+// Refused: agg() takes no OVER clause. Ossie's window metrics (cumulative_sales ...) are not measures.
+FIND store_sales ss, ss VIA same_sold_date date_dim d
+FETCH d.year, agg(ss.total_sales) OVER (ORDER d.year) cumulative_sales

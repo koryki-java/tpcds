@@ -1,0 +1,7 @@
+WITH
+aggd1 AS (
+ FIND store_sales ss, ss VIA same_sold_date date_dim d
+ FETCH DISTINCT ss.item_sk i1, ss.ticket_number i2, d.year k1, ss.ext_sales_price c1, ss.net_profit c2, ss.quantity c3),
+aggm1 AS (FIND aggd1 x FETCH x.k1 k1, sum(x.c1) v1, sum(x.c2) v2, sum(x.c3) v3)
+FIND aggm1 t
+ FETCH t.k1 year, max(t.v1) total_sales, max(t.v2) total_profit, max(t.v3) total_quantity

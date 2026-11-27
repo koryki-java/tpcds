@@ -1,3 +1,15 @@
+plugins {
+    id("com.gradleup.nmcp.settings") version "1.6.2"
+}
+nmcpSettings {
+    centralPortal {
+        username = providers.gradleProperty("centralPortalUsername").orNull
+        password = providers.gradleProperty("centralPortalPassword").orNull
+        publishingType = "USER_MANAGED"
+        publicationName = "$rootProject.name:$version"
+    }
+}
+
 rootProject.name = 'tpcds'
 
 dependencyResolutionManagement {
@@ -12,3 +24,4 @@ dependencyResolutionManagement {
 
 include 'catalog'
 include 'duckdb'
+include 'fixture'

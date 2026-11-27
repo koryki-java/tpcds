@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Where to publish'
+        required: true
+        default: 'snapshot'
+        type: choice
+        options: [snapshot, release]
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+      SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+      ORG_GRADLE_PROJECT_centralPortalUsername: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+      ORG_GRADLE_PROJECT_centralPortalPassword: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The tests read the fixture corpus from the northwind-fixtures submodule.
+          submodules: true
+
+      # A release runs from its tag only, however it is started. A manual run on a branch would
+      # publish the version in gradle.properties without a tag, and pushing the tag afterwards would
+      # fail: Central does not take a version twice. Started manually on the tag, it repeats a
+      # release that failed before the upload.
+      - name: Check release tag
+        if: github.event_name == 'push' || inputs.target == 'release'
+        run: |
+          version=$(sed -n 's/^version=//p' gradle.properties)
+          if [ "$GITHUB_REF_TYPE" != tag ] || [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::A release runs from the tag v$version only, not from $GITHUB_REF_TYPE $GITHUB_REF_NAME"
+            exit 1
+          fi
+
+      # A release of core must not depend on a SNAPSHOT of northwind: Central has none, so nobody
+      # could resolve the published artifact.
+      - name: Check no SNAPSHOT dependency
+        if: github.event_name == 'push' || inputs.target == 'release'
+        run: |
+          if grep -q 'SNAPSHOT' gradle/libs.versions.toml; then
+            echo "::error::gradle/libs.versions.toml still pins a SNAPSHOT; release northwind first and pin its release"
+            grep -n 'SNAPSHOT' gradle/libs.versions.toml
+            exit 1
+          fi
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Test
+        run: ./gradlew test --no-daemon
+
+      # An upload with a missing or malformed credential fails as "HTTP error 401: ''" at the very
+      # end, after the build and the signing, and the value is masked in the log -- so say here
+      # what is wrong with it while it can still be read.
+      - name: Check Central Portal credentials
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+        run: |
+          if [ -z "$CENTRAL_USERNAME" ] || [ -z "$CENTRAL_PASSWORD" ]; then
+            echo "::error::CENTRAL_PORTAL_USERNAME or CENTRAL_PORTAL_PASSWORD is not set in this repository"
+            exit 1
+          fi
+          # Both halves come from Account -> Generate User Token on central.sonatype.com. The
+          # portal login itself is rejected with the same 401, and an email address as the user
+          # name is the usual sign of it.
+          case "$CENTRAL_USERNAME" in
+            *@*) echo "::error::CENTRAL_PORTAL_USERNAME is an email address; it must be the user token's name"; exit 1 ;;
+          esac
+          # By length, not by grep: a trailing newline is a line terminator, so grep would not see
+          # the very whitespace that is easiest to paste in by accident.
+          both="$CENTRAL_USERNAME$CENTRAL_PASSWORD"
+          stripped=$(printf '%s' "$both" | tr -d '[:space:]')
+          if [ "${#stripped}" -ne "${#both}" ]; then
+            echo "::error::CENTRAL_PORTAL_USERNAME or CENTRAL_PORTAL_PASSWORD contains whitespace; a pasted space or newline breaks the Basic auth header"
+            exit 1
+          fi
+
+      # The two publish steps run sequentially, on purpose: everything they publish was checked to be
+      # byte-identical whether built sequentially or in parallel (65 of 65 artifacts), but signing and
+      # the upload to Central need credentials and were not tried in parallel, and a release cannot
+      # be taken back. To lift it, run this snapshot target once without --no-parallel: a snapshot is
+      # overwritten by the next one.
+      - name: Publish to playground (snapshot)
+        if: github.event_name == 'workflow_dispatch' && inputs.target == 'snapshot'
+        run: |
+          version=$(sed -n 's/^version=//p' gradle.properties)
+          ./gradlew publishAggregationToCentralSnapshots --no-daemon --no-parallel -Pversion="${version%-SNAPSHOT}-SNAPSHOT"
+
+      - name: Check signing key
+        if: github.event_name == 'push' || inputs.target == 'release'
+        run: |
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "::error::SIGNING_KEY is not set; the build would publish unsigned artifacts, which Central rejects"
+            exit 1
+          fi
+
+      - name: Publish real release
+        if: github.event_name == 'push' || inputs.target == 'release'
+        run: ./gradlew publishAggregationToCentralPortal --no-daemon --no-parallel

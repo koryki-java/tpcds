@@ -1,0 +1,1 @@
+margin ~ store_sales.total_profit, store_sales.total_sales

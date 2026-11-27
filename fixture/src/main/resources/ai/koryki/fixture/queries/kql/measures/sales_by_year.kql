@@ -1,0 +1,3 @@
+// Three measures of store_sales by year: they share one distinct layer. (Ossie model: total_sales, total_profit, total_quantity.)
+FIND store_sales ss, ss VIA same_sold_date date_dim d
+FETCH d.year, agg(ss.total_sales) total_sales, agg(ss.total_profit) total_profit, agg(ss.total_quantity) total_quantity

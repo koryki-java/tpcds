@@ -1,0 +1,3 @@
+// Ossie's customer_lifetime_value: sales divided by the customers who bought, each customer counted once however many sales they made.
+FIND store_sales ss, ss VIA same_customer customer c
+FETCH agg(ss.total_sales) / agg(c.customers) value_per_customer
