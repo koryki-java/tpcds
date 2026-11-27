@@ -8,10 +8,13 @@ junit = "6.1.3"
 duckdb = "1.5.5.0"
 spotless = "8.11.0"
 google-java-format = "1.36.1"
+# Writes the SBOM (CycloneDX) that ships next to every published artifact.
+cyclonedx = "3.6.1"
 
 [plugins]
 
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }
 
 [libraries]
 
